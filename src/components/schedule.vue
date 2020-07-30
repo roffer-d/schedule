@@ -14,5 +14,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-
+    .schedule{
+        font-size: 14px;
+    }
 </style>

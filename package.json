@@ -1,10 +1,19 @@
 {
-  "name": "schedule",
+  "name": "worker-schedule",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "description": "Worker Schedule",
+  "main": "lib/worker-schedule.common.js",
+  "keywords": ["schedule","work","date"],
+  "author": {
+    "email": "497664492@qq.com",
+    "name": "Roffer",
+    "url": "www.lonhey.com"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "lib": "vue-cli-service build --target lib --name worker-schedule --dest lib src/components/index.js ",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
