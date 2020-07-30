@@ -13,8 +13,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lib": "vue-cli-service build --target lib --name worker-schedule --dest lib src/components/index.js ",
-    "lint": "vue-cli-service lint"
+    "lib": "vue-cli-service build --target lib --name worker-schedule --dest lib src/components/index.js "
   },
   "dependencies": {
     "core-js": "^3.6.5",
