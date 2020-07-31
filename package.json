@@ -1,10 +1,10 @@
 {
-  "name": "r-worker-schedule",
-  "version": "0.1.2",
+  "name": "vue-mobile-schedule",
+  "version": "0.1.0",
   "private": false,
-  "description": "Worker Schedule",
+  "description": "Vue mobile worker schedule",
   "main": "src/components/index.js",
-  "keywords": ["schedule","work","date"],
+  "keywords": ["vue","mobile","schedule","work","date"],
   "author": {
     "email": "497664492@qq.com",
     "name": "Roffer",
@@ -13,7 +13,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lib": "vue-cli-service build --target lib --name r-worker-schedule --dest lib src/components/index.js "
+    "lib": "vue-cli-service build --target lib --name vue-mobile-schedule --dest lib src/components/index.js "
   },
   "dependencies": {
     "core-js": "^3.6.5",
