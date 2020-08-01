@@ -69,8 +69,8 @@
             }
         },
         mounted() {
-            let d = new Date('2020-06')
-            this.initDate(d)
+            let d = new Date('2020-08')
+            this.initDate()
         },
         methods: {
             /**
