@@ -233,9 +233,19 @@
 
                 item.selected = true;
             },
+            /**
+             * @desc 返回当前日期
+             * @author Dulongfei
+             *
+             */
             today(){
                 this.initDate()
             },
+            /**
+             * @desc 返回上一页
+             * @author Dulongfei
+             *
+             */
             back(){
                 this.$emit('back')
             }
