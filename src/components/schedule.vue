@@ -1,18 +1,18 @@
 <template>
     <div class="schedule">
         <div class="bar">
-            <div class="back"><img src="~@/assets/back.png"/></div>
+            <div class="back" @click="back"><img src="~@/assets/back.png"/></div>
             <div class="title">日程</div>
             <div class="func">
                 <img src="~@/assets/search.png"/>
                 <img src="~@/assets/settings.png"/>
             </div>
         </div>
-        <more height="3.4rem">
+        <more height="4rem">
             <div class="date_box">
                 <div class="current_date">
-                    <span>{{current}}</span>
-                    <span class="today">今天</span>
+                    <span>{{currentDateStr}}</span>
+                    <span class="today" @click="today">今天</span>
                 </div>
                 <div class="selector">
                     <div class="weeks">
@@ -21,9 +21,9 @@
                     <div class="day_box">
                         <div class="item"
                              :class="{
-                                current_day:item.isCurrentDay,
                                 current_month:item.isCurrentMonth,
                                 selected_day:item.selected,
+                                current_day:item.isCurrentDay,
                                 first_day:item.isFirstDay
                              }"
                              v-for="(item,index) in dayList"
@@ -64,12 +64,13 @@
             return {
                 weekList: ['日', '一', '二', '三', '四', '五', '六'],
                 dayList: [],
-                current:''
+                currentDate:null,
+                currentDateStr:''
             }
         },
         mounted() {
-
-            this.initDate()
+            let d = new Date('2020-06')
+            this.initDate(d)
         },
         methods: {
             /**
@@ -83,7 +84,9 @@
                 let year = d.getFullYear()
                 let month = d.getMonth() + 1
 
-                this.current = `${year}年${('0'+month).slice(-2)}月`
+                this.currentDateStr = `${year}年${('0'+month).slice(-2)}月`
+                this.currentDate = d
+                this.dayList = []
 
                 this.getPrevDays(year, month)
 
@@ -103,14 +106,15 @@
                 let week = this.getWeekOfFirstDay(year, month)
 
                 if (week > 0) {
-                    let cDate = new Date(year, month - 1, 0)
-                    cDate.setMonth(cDate.getMonth() - 1)
+                    let cDate = new Date(year, month, 0)
 
+                    cDate.setMonth(cDate.getMonth(),0)
                     let end = cDate.getDate()
                     let start = end - week + 1
 
+
                     for (let i = start; i <= end; i++) {
-                        let lunar = calendar.solar2lunar(cDate.getFullYear(), cDate.getMonth() + 2, i)
+                        let lunar = calendar.solar2lunar(cDate.getFullYear(), cDate.getMonth() + 1, i)
                         let {gzYear, IMonthCn, IDayCn,cMonth} = lunar
 
                         this.dayList.push({
@@ -145,9 +149,9 @@
                         day: i == 1 ? `${cMonth}月` : i,
                         lunar: IDayCn == '初一' ? IMonthCn : IDayCn,//农历
                         hasSchedule: i % 5 == 0,//是否有日程
-                        isFirstDay: i == 1,//是否是当月第一天
-                        isCurrentMonth: true,//日期是否包含在当前月份中
+                        isFirstDay: i == 1 && i !== currentDay,//是否是当月第一天 加上（i !== currentDay）是因为第一天跟当前日期重合，会出现样式覆盖，如果重叠，则强制为false
                         isCurrentDay: i == currentDay,//当前日期
+                        isCurrentMonth: true,//日期是否包含在当前月份中
                         selected: i == 11//选中的日期
                     })
                 }
@@ -165,7 +169,12 @@
                 let countOfMonth = this.getDayCountOfMonth(year, month)
 
                 let start = 1
-                let end = 35 - week - countOfMonth
+                let end = 35
+                if(week +countOfMonth > end){
+                    end = 42 - week - countOfMonth
+                }else{
+                    end = end - week - countOfMonth
+                }
 
                 let cDate = new Date(year, month + 1, 0)
 
@@ -208,6 +217,12 @@
             getDayCountOfMonth(year, month) {
                 let date = new Date(year, month, 0)
                 return date.getDate()
+            },
+            today(){
+                this.initDate()
+            },
+            back(){
+                this.$emit('back')
             }
         }
     };
@@ -241,6 +256,10 @@
             justify-content: center;
             background: url("~@/assets/bg.png") no-repeat;
             background-size: 100% 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+            width: 100%;
 
             img {
                 width: .4rem;
@@ -269,6 +288,8 @@
         }
 
         .date_box {
+            margin-top: .94rem;
+
             .current_date {
                 padding: .3rem 0;
                 text-align: center;

@@ -4,7 +4,13 @@
   "private": false,
   "description": "Vue mobile worker schedule",
   "main": "src/components/index.js",
-  "keywords": ["vue","mobile","schedule","work","date"],
+  "keywords": [
+    "vue",
+    "mobile",
+    "schedule",
+    "work",
+    "date"
+  ],
   "author": {
     "email": "497664492@qq.com",
     "name": "Roffer",
