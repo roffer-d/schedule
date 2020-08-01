@@ -26,6 +26,7 @@
                                 current_day:item.isCurrentDay,
                                 first_day:item.isFirstDay
                              }"
+                             @click="selectDate(item)"
                              v-for="(item,index) in dayList"
                              :key="index">
 
@@ -152,7 +153,7 @@
                         isFirstDay: i == 1 && i !== currentDay,//是否是当月第一天 加上（i !== currentDay）是因为第一天跟当前日期重合，会出现样式覆盖，如果重叠，则强制为false
                         isCurrentDay: i == currentDay,//当前日期
                         isCurrentMonth: true,//日期是否包含在当前月份中
-                        selected: i == 11//选中的日期
+                        selected: false//选中的日期
                     })
                 }
             },
@@ -217,6 +218,20 @@
             getDayCountOfMonth(year, month) {
                 let date = new Date(year, month, 0)
                 return date.getDate()
+            },
+            /**
+             * @desc 选中日期
+             * @param {Object} item 选中的日期对象
+             * @date 2020-07-31 15:53:40
+             * @author Dulongfei
+             *
+             */
+            selectDate(item){
+                this.dayList.forEach((day)=>{
+                    day.selected = false
+                })
+
+                item.selected = true;
             },
             today(){
                 this.initDate()
