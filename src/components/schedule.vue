@@ -202,7 +202,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: url("~@/assets/bg.png") no-repeat;
+            background: url("../assets/bg.png") no-repeat;
             background-size: 100% 100%;
             position: fixed;
             top: 0;

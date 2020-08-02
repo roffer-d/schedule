@@ -39,7 +39,7 @@
                 <div class="title" @click="showTixing = true">
                     <img :src="tixingImg"/>
                     <span class="name">{{form.tixing == 0 ? txData[form.tixing] : `提前${txData[form.tixing]}`}}</span>
-                    <img class="right" src="~@/assets/right.png"/>
+                    <img class="right" :src="rightImg"/>
                 </div>
                 <div class="line" style="margin: 0.01rem .5rem;"></div>
                 <div class="title">
