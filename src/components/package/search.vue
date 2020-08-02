@@ -19,8 +19,8 @@
 
 <script>
     import scheduleList from "./scheduleList";
-    import backImg from '../../assets/back.png'
-    import searchImg from '../../assets/search.png'
+    import backImg from '@/assets/back.png'
+    import searchImg from '@/assets/search.png'
 
     export default {
         name: "search",

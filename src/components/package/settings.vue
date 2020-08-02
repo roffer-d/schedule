@@ -17,7 +17,7 @@
 </template>
 
 <script>
-    import backImg from '../../assets/back.png'
+    import backImg from '@/assets/back.png'
 
     export default {
         name: "settingsSchedule",

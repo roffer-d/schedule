@@ -19,9 +19,9 @@
 
 <script>
     import editSchedule from "./editSchedule";
-    import fcjjImg from '../../assets/fcjj.png';
-    import jjImg from '../../assets/jj.png';
-    import ptImg from '../../assets/pt.png';
+    import fcjjImg from '@/assets/fcjj.png';
+    import jjImg from '@/assets/jj.png';
+    import ptImg from '@/assets/pt.png';
 
     export default {
         name: "scheduleList",

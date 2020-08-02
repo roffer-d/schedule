@@ -58,10 +58,10 @@
     import search from "./package/search";
     import settings from "./package/settings";
 
-    import backImg from "../assets/back.png";
-    import searchImg from "../assets/search.png";
-    import settingsImg from "../assets/settings.png";
-    import addImg from "../assets/add.png";
+    import backImg from "@/assets/back.png";
+    import searchImg from "@/assets/search.png";
+    import settingsImg from "@/assets/settings.png";
+    import addImg from "@/assets/add.png";
 
     export default {
         name: "schedule",
