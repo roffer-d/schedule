@@ -1,4 +1,4 @@
-import schedule from "./schedule";
+import schedule from "./components/schedule";
 
 export default {
     install(Vue){

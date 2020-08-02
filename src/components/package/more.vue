@@ -1,11 +1,3 @@
-<!--
- * @Description: 
- * @Version: 1.0
- * @Autor: Tangtao
- * @Date: 2020-07-27 09:15:17
- * @LastEditors: Seven
- * @LastEditTime: 2020-07-28 10:45:23
---> 
 <template>
   <div>
     <div class="more" :style="{height:baseHeight}">
