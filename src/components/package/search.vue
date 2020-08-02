@@ -1,13 +1,13 @@
 <template>
     <div class="settings_schedule">
         <div class="bar">
-            <div class="back" @click="back"><img src="~@/assets/back.png"/></div>
+            <div class="back" @click="back"><img :src="backImg"/></div>
             <div class="title">日程搜索</div>
         </div>
         <div class="ctx">
             <div class="row">
                 <div class="search_box">
-                    <img src="~@/assets/search.png" />
+                    <img :src="searchImg" />
                     <input type="text" v-model="searchText" placeholder="搜索日程名称、任务名" @blur="search" />
                 </div>
             </div>
@@ -19,12 +19,16 @@
 
 <script>
     import scheduleList from "./scheduleList";
+    import backImg from '../../assets/back.png'
+    import searchImg from '../../assets/search.png'
 
     export default {
         name: "search",
         components:{scheduleList},
         data(){
             return {
+                backImg,searchImg,
+
                 searchText:'',
                 scheduleList:[]
             }

@@ -3,9 +3,9 @@
         <div class="item" v-for="(item,index) in data" :key="index" @click="openEdit(item)">
             <div class="name">
                 {{item.name}}
-                <img v-if="item.type == 1" src="~@/assets/fcjj.png"/>
-                <img v-else-if="item.type == 2" src="~@/assets/jj.png"/>
-                <img v-else-if="item.type == 3" src="~@/assets/pt.png"/>
+                <img v-if="item.type == 1" :src="fcjjImg"/>
+                <img v-else-if="item.type == 2" :src="jjImg"/>
+                <img v-else-if="item.type == 3" :src="ptImg"/>
             </div>
             <div class="time">{{item.startTime}} - {{item.endTime}}</div>
             <div class="tag">{{item.tag}}</div>
@@ -19,6 +19,9 @@
 
 <script>
     import editSchedule from "./editSchedule";
+    import fcjjImg from '../../assets/fcjj.png';
+    import jjImg from '../../assets/jj.png';
+    import ptImg from '../../assets/pt.png';
 
     export default {
         name: "scheduleList",
@@ -26,6 +29,8 @@
         components:{editSchedule},
         data(){
             return {
+                fcjjImg,jjImg,ptImg,
+
                 editData:null,
                 showEditSchedule:false
             }

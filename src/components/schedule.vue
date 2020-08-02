@@ -1,11 +1,11 @@
 <template>
     <div class="schedule">
         <div class="bar">
-            <div class="back" @click="back"><img src="~@/assets/back.png"/></div>
+            <div class="back" @click="back"><img :src="backImg"/></div>
             <div class="title">日程</div>
             <div class="func">
-                <img src="~@/assets/search.png" @click="showSearch = true" />
-                <img src="~@/assets/settings.png" @click="showSettings = true"/>
+                <img :src="searchImg" @click="showSearch = true" />
+                <img :src="settingsImg" @click="showSettings = true"/>
             </div>
         </div>
         <more height="4rem">
@@ -18,7 +18,7 @@
             </div>
         </more>
 
-        <div class="add" @click="showEditSchedule=true"><img src="~@/assets/add.png"/>添加日程</div>
+        <div class="add" @click="showEditSchedule=true"><img :src="addImg"/>添加日程</div>
 
         <schedule-list :data="scheduleList"></schedule-list>
 
@@ -58,12 +58,19 @@
     import search from "./package/search";
     import settings from "./package/settings";
 
+    import backImg from "../assets/back.png";
+    import searchImg from "../assets/search.png";
+    import settingsImg from "../assets/settings.png";
+    import addImg from "../assets/add.png";
+
     export default {
         name: "schedule",
         props: ['option'],
         components: {more,scheduleList,dateBox,editSchedule,search,settings},
         data() {
             return {
+                backImg,searchImg,settingsImg,addImg,
+
                 minDate: new Date(),
                 maxDate: new Date(2100,11,1),
                 chooseDate: new Date(),

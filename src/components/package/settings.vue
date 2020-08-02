@@ -1,7 +1,7 @@
 <template>
     <div class="settings_schedule">
         <div class="bar">
-            <div class="back" @click="back"><img src="~@/assets/back.png"/></div>
+            <div class="back" @click="back"><img :src="backImg"/></div>
             <div class="title">日程设置</div>
         </div>
         <div class="ctx">
@@ -17,11 +17,15 @@
 </template>
 
 <script>
+    import backImg from '../../assets/back.png'
+
     export default {
         name: "settingsSchedule",
         props:['data'],
         data(){
             return {
+                backImg,
+
                 isPush:false
             }
         },

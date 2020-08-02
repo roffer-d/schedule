@@ -1,13 +1,13 @@
 <template>
     <div class="edit_schedule">
         <div class="bar">
-            <div class="back" @click="back"><img src="~@/assets/back.png"/></div>
+            <div class="back" @click="back"><img :src="backImg"/></div>
             <div class="title">新建日程</div>
         </div>
         <div class="ctx">
             <div class="row">
                 <div class="title">
-                    <img src="~@/assets/title.png"/>
+                    <img :src="titleImg"/>
                     <span class="name">标题</span>
                 </div>
                 <div class="input">
@@ -16,34 +16,34 @@
             </div>
             <div class="row">
                 <div class="title">
-                    <img src="~@/assets/time.png"/>
+                    <img :src="timeImg"/>
                     <span class="name">开始时间</span>
                 </div>
                 <div class="input" @click="openShowStartTime">
                     <span v-if="!startTime">请选择开始时间</span>
                     <span v-else>{{startTime}}</span>
-                    <img src="~@/assets/right.png"/>
+                    <img :src="rightImg"/>
                 </div>
                 <div class="line"></div>
                 <div class="title">
-                    <img src="~@/assets/time.png"/>
+                    <img :src="timeImg"/>
                     <span class="name">结束时间</span>
                 </div>
                 <div class="input" @click="openShowEndTime">
                     <span v-if="!endTime">请选择结束时间</span>
                     <span v-else>{{endTime}}</span>
-                    <img src="~@/assets/right.png"/>
+                    <img :src="rightImg"/>
                 </div>
             </div>
             <div class="row">
                 <div class="title" @click="showTixing = true">
-                    <img src="~@/assets/tixing.png"/>
+                    <img :src="tixingImg"/>
                     <span class="name">{{form.tixing == 0 ? txData[form.tixing] : `提前${txData[form.tixing]}`}}</span>
                     <img class="right" src="~@/assets/right.png"/>
                 </div>
                 <div class="line" style="margin: 0.01rem .5rem;"></div>
                 <div class="title">
-                    <img src="~@/assets/wechat.png"/>
+                    <img :src="wechatImg"/>
                     <span class="name">微信通知</span>
                     <van-switch v-model="form.wxtz" active-color="#3EC271" inactive-color="#DFE5F0" size=".35rem"
                                 @change="wxtzChange"/>
@@ -88,6 +88,13 @@
     import Vue from 'vue';
     import { Toast } from 'vant';
 
+    import backImg from '../../assets/back.png'
+    import titleImg from '../../assets/title.png'
+    import timeImg from '../../assets/time.png'
+    import rightImg from '../../assets/right.png'
+    import tixingImg from '../../assets/tixing.png'
+    import wechatImg from '../../assets/wechat.png'
+
     Vue.use(Toast);
 
     export default {
@@ -101,6 +108,8 @@
         components:{dateBox},
         data() {
             return {
+                backImg,titleImg,timeImg,rightImg,tixingImg,wechatImg,
+
                 form: {
                     name: '',
                     startTime: '',
