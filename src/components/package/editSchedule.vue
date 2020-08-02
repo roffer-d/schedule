@@ -11,7 +11,7 @@
                     <span class="name">标题</span>
                 </div>
                 <div class="input">
-                    <input type="text" v-model="form.title" placeholder="请输入标题"/>
+                    <input type="text" v-model="form.name" placeholder="请输入标题"/>
                 </div>
             </div>
             <div class="row">
@@ -45,7 +45,7 @@
                 <div class="title">
                     <img src="~@/assets/wechat.png"/>
                     <span class="name">微信通知</span>
-                    <van-switch v-model="form.wxtz" active-color="#3EC271" inactive-color="#C9EFD8" size=".35rem"
+                    <van-switch v-model="form.wxtz" active-color="#3EC271" inactive-color="#DFE5F0" size=".35rem"
                                 @change="wxtzChange"/>
                 </div>
             </div>
@@ -102,7 +102,7 @@
         data() {
             return {
                 form: {
-                    title: '',
+                    name: '',
                     startTime: '',
                     endTime: '',
                     tixing: 0,
@@ -169,9 +169,9 @@
         },
         methods: {
             save(){
-                const {title,startTime,endTime} = this.form
+                const {name,startTime,endTime} = this.form
 
-                if(!title){
+                if(!name){
                     Toast('标题不能为空！')
                     return;
                 }else if(!startTime){
@@ -184,6 +184,8 @@
                     Toast('结束时间必须大于开始时间！')
                     return;
                 }
+
+                this.back()
             },
             openShowStartTime(){
                 this.showStartTime = true
