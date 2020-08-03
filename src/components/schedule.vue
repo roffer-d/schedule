@@ -58,10 +58,10 @@
     import search from "./package/search";
     import settings from "./package/settings";
 
-    import backImg from "@/assets/back.png";
-    import searchImg from "@/assets/search.png";
-    import settingsImg from "@/assets/settings.png";
-    import addImg from "@/assets/add.png";
+    import backImg from "@/assets/schedule/back.png";
+    import searchImg from "@/assets/schedule/search.png";
+    import settingsImg from "@/assets/schedule/settings.png";
+    import addImg from "@/assets/schedule/add.png";
 
     export default {
         name: "schedule",
@@ -202,7 +202,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: url("../assets/bg.png") no-repeat;
+            background: url("../assets/images/schedule/bg.png") no-repeat;
             background-size: 100% 100%;
             position: fixed;
             top: 0;

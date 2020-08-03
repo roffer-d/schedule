@@ -88,12 +88,12 @@
     import Vue from 'vue';
     import { Toast } from 'vant';
 
-    import backImg from '@/assets/back.png'
-    import titleImg from '@/assets/title.png'
-    import timeImg from '@/assets/time.png'
-    import rightImg from '@/assets/right.png'
-    import tixingImg from '@/assets/tixing.png'
-    import wechatImg from '@/assets/wechat.png'
+    import backImg from '@/assets/images/schedule/back.png'
+    import titleImg from '@/assets/images/schedule/title.png'
+    import timeImg from '@/assets/images/schedule/time.png'
+    import rightImg from '@/assets/images/schedule/right.png'
+    import tixingImg from '@/assets/images/schedule/tixing.png'
+    import wechatImg from '@/assets/images/schedule/wechat.png'
 
     Vue.use(Toast);
 
