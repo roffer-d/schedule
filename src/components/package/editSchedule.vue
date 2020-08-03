@@ -53,11 +53,11 @@
 
         <div class="save_btn" @click="save">保存</div>
 
-        <van-popup v-model="showTixing" position="bottom" :style="{ height: '40%' }">
+        <van-popup v-model="showTixing" position="bottom" :style="{ height: '45%' }">
             <van-picker show-toolbar title="提前通知" :columns="txData" :default-index="form.tixing" @confirm="txConfirm" @cancel="txCancel" />
         </van-popup>
 
-        <van-popup v-model="showStartTime" position="bottom" :style="{ height: '46%' }">
+        <van-popup v-model="showStartTime" position="bottom" :style="{ height: '50%' }">
             <div class="choose_time">
                 <van-tabs v-model="activeStart" line-width=".5rem" line-height=".06rem" color="#40C273" @change="startDateChange">
                     <van-tab name="date" :title="activeStartDateTitle"></van-tab>
@@ -69,7 +69,7 @@
             <van-picker v-show="!startDateShow" :columns="startDateData" :default-index="0" ref="startTime" @change="startTimeChange"/>
         </van-popup>
 
-        <van-popup v-model="showEndTime" position="bottom" :style="{ height: '46%' }">
+        <van-popup v-model="showEndTime" position="bottom" :style="{ height: '50%' }">
             <div class="choose_time">
                 <van-tabs v-model="activeEnd" line-width=".5rem" line-height=".06rem" color="#40C273" @change="endDateChange">
                     <van-tab name="date" :title="activeEndDateTitle"></van-tab>
@@ -370,6 +370,11 @@
                         height: .34rem;
                         vertical-align: sub;
                         margin-right: .15rem;
+
+                        &:last-child{
+                            width: .3rem;
+                            height: .3rem;
+                        }
                     }
 
                     .right {
@@ -393,7 +398,6 @@
                 .input {
                     position: relative;
                     padding-left: .75rem;
-                    width: 90%;
 
                     input {
                         border: none;
