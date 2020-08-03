@@ -82,10 +82,8 @@
 
         .ctx {
             margin-top: .94rem;
-            width: calc(100% - .5rem);
 
             .row {
-                width: 100%;
                 background: #fff;
                 padding: .3rem;
                 font-family: PingFangSC-Regular, PingFang SC;

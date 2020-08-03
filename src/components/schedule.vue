@@ -40,11 +40,11 @@
             <edit-schedule :close.sync="showEditSchedule"></edit-schedule>
         </van-popup>
 
-        <van-popup v-model="showSearch" class="search_popup" position="bottom" :style="{ height: '100%' }">
+        <van-popup v-model="showSearch" class="search_popup" position="right" :style="{ height: '100%',width:'100%' }">
             <search :close.sync="showSearch"></search>
         </van-popup>
 
-        <van-popup v-model="showSettings" class="settings_popup" position="bottom" :style="{ height: '100%' }">
+        <van-popup v-model="showSettings" class="settings_popup" position="right" :style="{ height: '100%',width:'100%' }">
             <settings :close.sync="showSettings"></settings>
         </van-popup>
     </div>

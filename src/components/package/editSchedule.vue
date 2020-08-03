@@ -41,7 +41,7 @@
                     <span class="name">{{form.tixing == 0 ? txData[form.tixing] : `提前${txData[form.tixing]}`}}</span>
                     <img class="right" :src="rightImg"/>
                 </div>
-                <div class="line" style="margin: 0.01rem .5rem;"></div>
+                <div class="line" style="margin-top: 0;"></div>
                 <div class="title">
                     <img :src="wechatImg"/>
                     <span class="name">微信通知</span>
@@ -53,11 +53,11 @@
 
         <div class="save_btn" @click="save">保存</div>
 
-        <van-popup v-model="showTixing" position="bottom" :style="{ height: '40%' }" round>
+        <van-popup v-model="showTixing" position="bottom" :style="{ height: '40%' }">
             <van-picker show-toolbar title="提前通知" :columns="txData" :default-index="form.tixing" @confirm="txConfirm" @cancel="txCancel" />
         </van-popup>
 
-        <van-popup v-model="showStartTime" position="bottom" :style="{ height: '46%' }" round>
+        <van-popup v-model="showStartTime" position="bottom" :style="{ height: '46%' }">
             <div class="choose_time">
                 <van-tabs v-model="activeStart" line-width=".5rem" line-height=".06rem" color="#40C273" @change="startDateChange">
                     <van-tab name="date" :title="activeStartDateTitle"></van-tab>
@@ -69,7 +69,7 @@
             <van-picker v-show="!startDateShow" :columns="startDateData" :default-index="0" ref="startTime" @change="startTimeChange"/>
         </van-popup>
 
-        <van-popup v-model="showEndTime" position="bottom" :style="{ height: '46%' }" round>
+        <van-popup v-model="showEndTime" position="bottom" :style="{ height: '46%' }">
             <div class="choose_time">
                 <van-tabs v-model="activeEnd" line-width=".5rem" line-height=".06rem" color="#40C273" @change="endDateChange">
                     <van-tab name="date" :title="activeEndDateTitle"></van-tab>
@@ -352,9 +352,8 @@
             margin-top: .94rem;
 
             .row {
-                width: 100%;
                 background: #fff;
-                padding: .3rem;
+                padding: .3rem 0;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
 
@@ -363,9 +362,8 @@
                 }
 
                 .title {
-                    padding: .3rem 0;
+                    padding: 0.3rem 0 0.3rem .3rem;
                     position: relative;
-                    width: calc(100% - .5rem);
 
                     img {
                         width: .34rem;
@@ -387,15 +385,15 @@
                 }
 
                 .line {
-                    width: calc(100% - 1.2rem);
-                    margin: .4rem 0 0 0.5rem;
-                    border-bottom: .02rem solid #EFF1F4;
+                    width: 90%;
+                    margin: 0.4rem 0 0 0.75rem;
+                    border-bottom: 0.02rem solid #EFF1F4;
                 }
 
                 .input {
                     position: relative;
-                    padding-left: .5rem;
-                    width: calc(100% - 1.2rem);
+                    padding-left: .75rem;
+                    width: 90%;
 
                     input {
                         border: none;
@@ -414,7 +412,7 @@
                         width: .3rem;
                         height: .3rem;
                         position: absolute;
-                        right: 0;
+                        right: 0.1rem;
                         top: .05rem;
                     }
                 }
