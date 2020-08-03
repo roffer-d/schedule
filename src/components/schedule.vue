@@ -4,8 +4,8 @@
             <div class="back" @click="back"><img :src="backImg"/></div>
             <div class="title">日程</div>
             <div class="func">
-                <img :src="searchImg" @click="showSearch = true" />
-                <img :src="settingsImg" @click="showSettings = true"/>
+                <img v-if="search" :src="searchImg" @click="showSearch = true"/>
+                <img v-if="settings" :src="settingsImg" @click="showSettings = true"/>
             </div>
         </div>
         <more height="4rem">
@@ -14,13 +14,18 @@
                     <span @click="showChooseDate=true">{{currentDateStr}}</span>
                     <span class="today" @click="backToday">今天</span>
                 </div>
-                <date-box :date.sync="chooseDate" show-lunar show-point ref="dateBox" @select="dateSelected"></date-box>
+                <date-box
+                        :date.sync="chooseDate"
+                        :show-lunar="lunar"
+                        :show-point="point"
+                        ref="dateBox"
+                        @select="dateSelected"/>
             </div>
         </more>
 
-        <div class="add" @click="showEditSchedule=true"><img :src="addImg"/>添加日程</div>
+        <div class="add" v-if="edit" @click="showEditSchedule=true"><img :src="addImg"/>添加日程</div>
 
-        <schedule-list :data="scheduleList"></schedule-list>
+        <schedule-list :data="data"></schedule-list>
 
         <van-popup v-model="showChooseDate" position="bottom" :style="{ height: '40%' }">
             <van-datetime-picker
@@ -36,16 +41,18 @@
             />
         </van-popup>
 
-        <van-popup v-model="showEditSchedule" class="edit_popup" position="right" :style="{ height: '100%',width:'100%' }">
-            <edit-schedule :close.sync="showEditSchedule"></edit-schedule>
+        <van-popup v-model="showEditSchedule" class="edit_popup" position="right"
+                   :style="{ height: '100%',width:'100%' }">
+            <edit-schedule :close.sync="showEditSchedule" @onEdit="onEdit"></edit-schedule>
         </van-popup>
 
         <van-popup v-model="showSearch" class="search_popup" position="right" :style="{ height: '100%',width:'100%' }">
-            <search :close.sync="showSearch"></search>
+            <search :close.sync="showSearch" @onSearch="onSearch"></search>
         </van-popup>
 
-        <van-popup v-model="showSettings" class="settings_popup" position="right" :style="{ height: '100%',width:'100%' }">
-            <settings :close.sync="showSettings"></settings>
+        <van-popup v-model="showSettings" class="settings_popup" position="right"
+                   :style="{ height: '100%',width:'100%' }">
+            <settings :close.sync="showSettings" @onSettings="onSettings"></settings>
         </van-popup>
     </div>
 </template>
@@ -65,30 +72,72 @@
 
     export default {
         name: "schedule",
-        props: ['option'],
-        components: {more,scheduleList,dateBox,editSchedule,search,settings},
+        props: {
+            /** 数据是否本地存储，true：添加的日程将存放在localStorage false：调用接口数据 **/
+            local: {
+                type: Boolean,
+                default: true
+            },
+            /** 是否显示农历 **/
+            lunar: {
+                type: Boolean,
+                default: true
+            },
+            /** 是否在日历中显示日程标记 **/
+            point: {
+                type: Boolean,
+                default: true
+            },
+            /** 是否显示搜索按钮 **/
+            search: {
+                type: Boolean,
+                default: true
+            },
+            /** 是否可编辑 **/
+            edit: {
+                type: Boolean,
+                default: true
+            },
+            /** 是否显示设置按钮 **/
+            settings: {
+                type: Boolean,
+                default: true
+            },
+            /** 可选的最小时间 **/
+            minDate: {
+                type: Date,
+                default: () => {
+                    return new Date()
+                }
+            },
+            /** 可选的最大时间 **/
+            maxDate: {
+                type: Date,
+                default: () => {
+                    return new Date(2100, 11, 1)
+                }
+            },
+            data: {
+                type: Array,
+                defalut: () => []
+            }
+        },
+        components: {more, scheduleList, dateBox, editSchedule, search, settings},
         data() {
             return {
-                backImg,searchImg,settingsImg,addImg,
+                backImg, searchImg, settingsImg, addImg,
 
-                minDate: new Date(),
-                maxDate: new Date(2100,11,1),
                 chooseDate: new Date(),
                 pickerDate: new Date(),
                 showChooseDate: false,
                 showEditSchedule: false,
                 showSettings: false,
                 showSearch: false,
-                currentDateStr: '',
-                scheduleList:[
-                    {name:'用户模块任务列表数据提交1',startTime:'10:00',endTime:'12:00',type:1,tag:'智慧机房PPT绘制1'},
-                    {name:'用户模块任务列表数据提交2',startTime:'13:00',endTime:'14:00',type:2,tag:'智慧机房PPT绘制2'},
-                    {name:'用户模块任务列表数据提交3',startTime:'15:00',endTime:'16:00',type:3,tag:'智慧机房PPT绘制3'}
-                ]
+                currentDateStr: ''
             }
         },
-        watch:{
-            chooseDate(date){
+        watch: {
+            chooseDate(date) {
                 this.getYearAndMonth(date)
             }
         },
@@ -97,16 +146,39 @@
         },
         methods: {
             /**
+             * @desc 执行搜索
+             * @param {参数类型} 参数名称 参数介绍
+             * @date 2020-08-03 17:10:41
+             * @author Dulongfei
+             *
+             */
+            onSearch(val,resolve){
+               this.$emit('onSearch',val,resolve)
+            },
+            onEdit(form,resolve){
+
+            },
+            /**
+             * @desc 执行设置时回调
+             * @param {Object} {key, value} 当前设置项的键值
+             * @date 2020-08-03 16:30:05
+             * @author Dulongfei
+             *
+             */
+            onSettings(item){
+                this.$emit('onSettings',item)
+            },
+            /**
              * @desc 选中日期回调函数
              * @param {Object}  info 选中的日期对象(包含农历子对象)
              * @date 2020-07-31 15:31:55
              * @author Dulongfei
              *
              */
-            dateSelected(info){
-                console.log(info)
+            dateSelected(info) {
+                this.$emit('onSelect', info)
             },
-            getYearAndMonth(date){
+            getYearAndMonth(date) {
                 let year = date.getFullYear()
                 let month = date.getMonth() + 1
                 this.currentDateStr = `${year}年${('0' + month).slice(-2)}月`

@@ -9,7 +9,7 @@
                 <div class="title">通用设置</div>
                 <div class="item">
                     <div>是否接收每日微信推送</div>
-                    <van-switch v-model="isPush" active-color="#3EC271" inactive-color="#DFE5F0" size=".35rem" @change="pushChange"/>
+                    <van-switch v-model="isPush" active-color="#3EC271" inactive-color="#DFE5F0" size=".35rem" @change="(val)=>{pushChange('isTs',val)}"/>
                 </div>
             </div>
         </div>
@@ -33,8 +33,8 @@
 
         },
         methods:{
-            pushChange(isPush){
-                console.log(isPush)
+            pushChange(key,value){
+                this.$emit('onSettings',{key,value})
             },
             back() {
                 this.$emit('update:close', false)

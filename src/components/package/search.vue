@@ -37,21 +37,17 @@
 
         },
         methods:{
-            pushChange(isPush){
-                console.log(isPush)
-            },
             back() {
                 this.$emit('update:close', false)
             },
             search(){
                 if(this.searchText.trim()){
-                    this.scheduleList = this.scheduleList.concat([
-                        {name:'用户模块任务列表数据提交1',startTime:'10:00',endTime:'12:00',type:1,tag:'智慧机房PPT绘制1'},
-                        {name:'用户模块任务列表数据提交2',startTime:'13:00',endTime:'14:00',type:2,tag:'智慧机房PPT绘制2'},
-                        {name:'用户模块任务列表数据提交3',startTime:'15:00',endTime:'16:00',type:3,tag:'智慧机房PPT绘制3'}
-                    ])
+                    this.$emit('onSearch',this.searchText,this.repeatSearch)
                 }
-            }
+            },
+            repeatSearch(list){
+                this.scheduleList = list
+            },
         }
     }
 </script>
