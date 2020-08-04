@@ -1,9 +1,9 @@
 {
   "name": "vue-mobile-schedule",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "private": false,
   "description": "Vue mobile worker schedule",
-  "main": "lib/vue-mobile-schedule.umd.js",
+  "main": "src/index.js",
   "keywords": [
     "vue",
     "mobile",
@@ -19,7 +19,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lib": "vue-cli-service build --target lib --name vue-mobile-schedule --dest lib src/index.js "
+    "lib": "vue-cli-service build --target lib --name vue-mobile-schedule --dest lib src/index.js"
   },
   "dependencies": {
     "core-js": "^3.6.5",
