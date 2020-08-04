@@ -2,7 +2,7 @@
     <div class="edit_schedule">
         <div class="bar">
             <div class="back" @click="back"><img :src="backImg"/></div>
-            <div class="title">新建日程</div>
+            <div class="title">{{this.data?'编辑':'新建'}}日程</div>
         </div>
         <div class="ctx">
             <div class="row">
@@ -54,31 +54,37 @@
         <div class="save_btn" @click="save">保存</div>
 
         <van-popup v-model="showTixing" position="bottom" :style="{ height: '45%' }">
-            <van-picker show-toolbar title="提前通知" :columns="txData" :default-index="form.tixing" @confirm="txConfirm" @cancel="txCancel" />
+            <van-picker show-toolbar title="提前通知" :columns="txData" :default-index="form.tixing" @confirm="txConfirm"
+                        @cancel="txCancel"/>
         </van-popup>
 
         <van-popup v-model="showStartTime" position="bottom" :style="{ height: '50%' }">
             <div class="choose_time">
-                <van-tabs v-model="activeStart" line-width=".5rem" line-height=".06rem" color="#40C273" @change="startDateChange">
+                <van-tabs v-model="activeStart" line-width=".5rem" line-height=".06rem" color="#40C273"
+                          @change="startDateChange">
                     <van-tab name="date" :title="activeStartDateTitle"></van-tab>
                     <van-tab name="time" :title="activeStartTimeTitle"></van-tab>
                 </van-tabs>
                 <div class="time_ok" @click="startTimeOk">确定</div>
             </div>
-            <date-box v-show="startDateShow" :date.sync="chooseStartDate" @select="selectedStartDate" ref="chooseStartDate"/>
-            <van-picker v-show="!startDateShow" :columns="startDateData" :default-index="0" ref="startTime" @change="startTimeChange"/>
+            <date-box v-show="startDateShow" :date.sync="chooseStartDate" @select="selectedStartDate"
+                      ref="chooseStartDate"/>
+            <van-picker v-show="!startDateShow" :columns="startDateData" :default-index="0" ref="startTime"
+                        @change="startTimeChange"/>
         </van-popup>
 
         <van-popup v-model="showEndTime" position="bottom" :style="{ height: '50%' }">
             <div class="choose_time">
-                <van-tabs v-model="activeEnd" line-width=".5rem" line-height=".06rem" color="#40C273" @change="endDateChange">
+                <van-tabs v-model="activeEnd" line-width=".5rem" line-height=".06rem" color="#40C273"
+                          @change="endDateChange">
                     <van-tab name="date" :title="activeEndDateTitle"></van-tab>
                     <van-tab name="time" :title="activeEndTimeTitle"></van-tab>
                 </van-tabs>
                 <div class="time_ok" @click="endTimeOk">确定</div>
             </div>
             <date-box v-show="endDateShow" :date.sync="chooseEndDate" @select="selectedEndDate" ref="chooseEndDate"/>
-            <van-picker v-show="!endDateShow" :columns="endDateData" :default-index="0" ref="endTime" @change="endTimeChange"/>
+            <van-picker v-show="!endDateShow" :columns="endDateData" :default-index="0" ref="endTime"
+                        @change="endTimeChange"/>
         </van-popup>
     </div>
 </template>
@@ -86,7 +92,7 @@
 <script>
     import dateBox from "./dateBox";
     import Vue from 'vue';
-    import { Toast } from 'vant';
+    import {Toast} from 'vant';
 
     import backImg from '@/assets/images/schedule/back.png'
     import titleImg from '@/assets/images/schedule/title.png'
@@ -100,15 +106,16 @@
     export default {
         name: "editSchedule",
         props: {
-            data:{
-                type:Object,
-                default:()=>{}
+            data: {
+                type: Object,
+                default: () => {
+                }
             }
         },
-        components:{dateBox},
+        components: {dateBox},
         data() {
             return {
-                backImg,titleImg,timeImg,rightImg,tixingImg,wechatImg,
+                backImg, titleImg, timeImg, rightImg, tixingImg, wechatImg,
 
                 form: {
                     name: '',
@@ -118,29 +125,29 @@
                     wxtz: false,
                 },
 
-                activeStartDateTitle:'',
-                activeStartTimeTitle:'',
+                activeStartDateTitle: '',
+                activeStartTimeTitle: '',
 
-                activeEndDateTitle:'',
-                activeEndTimeTitle:'',
+                activeEndDateTitle: '',
+                activeEndTimeTitle: '',
 
                 startTime: '',
                 endTime: '',
 
-                chooseStartDate:new Date(),
-                chooseEndDate:new Date(),
-                activeStart:'',
-                activeEnd:'',
+                chooseStartDate: new Date(),
+                chooseEndDate: new Date(),
+                activeStart: '',
+                activeEnd: '',
 
-                chooseStartTime:'',
-                chooseEndTime:'',
+                chooseStartTime: '',
+                chooseEndTime: '',
                 showTixing: false,
                 showStartTime: false,
                 showEndTime: false,
                 startDateShow: true,
                 endDateShow: true,
                 txData: ['按时通知', '一刻钟', '半小时', '一小时', '两小时'],
-                weeks:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                weeks: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
                 startDateData: [
                     {
                         values: [],
@@ -164,78 +171,219 @@
             }
         },
         mounted() {
-            console.log(this.data)
-
-            for(let i = 1 ; i <=23; i++){
-                this.startDateData[0].values.push(`0${i}`.slice(-2))
-                this.endDateData[0].values.push(`0${i}`.slice(-2))
+            /** 编辑数据 **/
+            if (this.data) {
+                this.analysisForm()
             }
 
-            for(let i = 1 ; i <=59; i++){
-                this.startDateData[1].values.push(`0${i}`.slice(-2))
-                this.endDateData[1].values.push(`0${i}`.slice(-2))
-            }
+            this.initTimeRange()
         },
         methods: {
-            save(){
-                const {name,startTime,endTime} = this.form
+            /**
+             * @desc 通过传递过来的编辑数据，反显表单内容
+             * @date 2020-08-04 10:39:28
+             * @author Dulongfei
+             *
+             */
+            analysisForm() {
+                this.form = Object.assign({}, this.form, this.data)
 
-                if(!name){
+                let startArray = this.form.startTime.split(' ')
+                let startDate = startArray[0].split('-')
+                let startTime = startArray[1]
+                let startYear = startDate[0]
+                let startMonth = startDate[1]
+                let startDay = startDate[2]
+                let startWeek = new Date(startYear * 1, startMonth - 1, startDay * 1).getDay()
+                startWeek = this.weeks[startWeek === 7 ? 0 : startWeek]
+
+                let endArray = this.form.endTime.split(' ')
+                let endDate = endArray[0].split('-')
+                let endTime = endArray[1]
+                let endYear = endDate[0]
+                let endMonth = endDate[1]
+                let endDay = endDate[2]
+                let endWeek = new Date(endYear * 1, endMonth - 1, endDay * 1).getDay()
+                endWeek = this.weeks[endWeek === 7 ? 0 : endWeek]
+
+                this.activeStartDateTitle = `${startMonth}月${startDay}日`
+                this.activeStartTimeTitle = `${startTime}`
+                this.startTime = `${startMonth}月${startDay}日 ${startWeek} ${startTime}`
+
+                this.activeEndDateTitle = `${endMonth}月${endDay}日`
+                this.activeEndTimeTitle = `${endTime}`
+                this.endTime = `${endMonth}月${endDay}日 ${endWeek} ${endTime}`
+            },
+            /**
+             * @desc 初始化时分的数据范围
+             * @date 2020-08-04 10:39:56
+             * @author Dulongfei
+             *
+             */
+            initTimeRange() {
+                let startHour = ''
+                let startMinutes = ''
+                let endHour = ''
+                let endMinutes = ''
+
+                if(this.form.startTime && this.form.endTime){
+                    let start = this.form.startTime.split(' ')[1].split(':')
+                    let end = this.form.endTime.split(' ')[1].split(':')
+
+                    startHour = start[0]
+                    startMinutes = start[1]
+
+                    endHour = end[0]
+                    endMinutes = end[1]
+                }
+
+                for (let i = 0; i <= 23; i++) {
+                    let value = `0${i}`.slice(-2)
+
+                    this.startDateData[0].values.push(value)
+                    this.endDateData[0].values.push(value)
+
+                    console.log(startHour ,value)
+                    if(startHour === value){
+                        console.log(startHour)
+                        this.startDateData[0].defaultIndex = i
+                    }
+                    if(endHour === value){
+                        console.log(endHour)
+                        this.endDateData[0].defaultIndex = i
+                    }
+                }
+
+                for (let i = 0; i <= 59; i++) {
+                    let value = `0${i}`.slice(-2)
+
+                    this.startDateData[1].values.push(value)
+                    this.endDateData[1].values.push(value)
+
+                    if(startMinutes === value){
+                        this.startDateData[1].defaultIndex = i
+                    }
+                    if(endMinutes === value){
+                        this.endDateData[1].defaultIndex = i
+                    }
+                }
+            },
+            /**
+             * @desc 保存事件
+             * @date 2020-08-04 10:40:28
+             * @author Dulongfei
+             *
+             */
+            save() {
+                const {name, startTime, endTime} = this.form
+
+                if (!name) {
                     Toast('标题不能为空！')
                     return;
-                }else if(!startTime){
+                } else if (!startTime) {
                     Toast('请选择开始时间！')
                     return;
-                }else if(!endTime){
+                } else if (!endTime) {
                     Toast('请选择结束时间！')
                     return;
-                }else if(startTime >= endTime){
+                } else if (startTime >= endTime) {
                     Toast('结束时间必须大于开始时间！')
                     return;
                 }
 
-                this.back()
+                this.$emit('onEdit', this.form, this.afterSave)
             },
-            openShowStartTime(){
+            /**
+             * @desc 保存后的操作
+             * @date 2020-08-04 10:40:39
+             * @author Dulongfei
+             *
+             */
+            afterSave(isSuccess) {
+                isSuccess && this.back()
+            },
+            /**
+             * @desc 显示开始时间弹窗
+             * @date 2020-08-04 10:41:24
+             * @author Dulongfei
+             *
+             */
+            openShowStartTime() {
                 this.showStartTime = true
 
-                this.$nextTick(()=>{
-                    let startInfo = this.$refs.chooseStartDate.getSelected()
+                this.$nextTick(() => {
+                    let startRef = this.$refs.chooseStartDate
+                    let startInfo = startRef.getSelected()
 
-                    let startYear = startInfo.year
-                    let startMonth = `0${startInfo.month}`.slice(-2)
-                    let startDay = `0${startInfo.date}`.slice(-2)
-                    let startTime = this.$refs.startTime.getValues()
+                    if (this.form.startTime) {
+                        let startArray = this.form.startTime.split(' ')
+                        let startDate = startArray[0].split('-')
+                        // startRef.setSelected(startDate[0] * 1, startDate[1] * 1, startDate[2] * 1)
+                        this.chooseStartDate = new Date(startDate[0] * 1,startDate[1] - 1,startDate[2] * 1)
 
-                    this.activeStartDateTitle = `${startMonth}月${startDay}日`
-                    this.activeStartTimeTitle = `${startTime.join(':')}`
+                        this.$nextTick(()=>{
+                            startInfo = startRef.getSelected()
+                            this.selectedStartDate(startInfo)
+
+                            // this.activeStartTimeTitle = `${this.form.startTime.split(' ')[1]}`
+                        })
+                    }else{
+                        this.selectedStartDate(startInfo)
+                    }
                 })
             },
-            openShowEndTime(){
+            /**
+             * @desc 显示结束时间弹窗
+             * @date 2020-08-04 10:41:24
+             * @author Dulongfei
+             *
+             */
+            openShowEndTime() {
                 this.showEndTime = true
 
-                this.$nextTick(()=>{
-                    let endInfo = this.$refs.chooseEndDate.getSelected()
+                this.$nextTick(() => {
+                    let endRef = this.$refs.chooseEndDate
+                    let endInfo = endRef.getSelected()
 
-                    let endYear = endInfo.year
-                    let endMonth = `0${endInfo.month}`.slice(-2)
-                    let endDay = `0${endInfo.date}`.slice(-2)
-                    let endTime = this.$refs.endTime.getValues()
+                    if (this.form.endTime) {
+                        let endArray = this.form.endTime.split(' ')
+                        let endDate = endArray[0].split('-')
+                        // endRef.setSelected(endDate[0] * 1, endDate[1] * 1, endDate[2] * 1)
+                        this.chooseEndDate = new Date(endDate[0] * 1,endDate[1] - 1,endDate[2] * 1)
 
-                    this.activeEndDateTitle = `${endMonth}月${endDay}日`
-                    this.activeEndTimeTitle = `${endTime.join(':')}`
+                        this.$nextTick(()=>{
+                            endInfo = endRef.getSelected()
+                            this.selectedEndDate(endInfo)
+
+                            // this.activeEndTimeTitle = `${this.form.endTime.split(' ')[1]}`
+                        })
+                    }else{
+                        this.selectedEndDate(endInfo)
+                    }
                 })
             },
-            selectedStartDate(info){
-                this.openShowStartTime()
+            selectedStartDate(info) {
+                let startYear = info.year
+                let startMonth = `0${info.month}`.slice(-2)
+                let startDay = `0${info.date}`.slice(-2)
+                let startTime = this.$refs.startTime.getValues()
+
+                this.activeStartDateTitle = `${startMonth}月${startDay}日`
+                this.activeStartTimeTitle = `${startTime.join(':')}`
             },
-            selectedEndDate(info){
-                this.openShowEndTime()
+            selectedEndDate(info) {
+                let endYear = info.year
+                let endMonth = `0${info.month}`.slice(-2)
+                let endDay = `0${info.date}`.slice(-2)
+                let endTime = this.$refs.endTime.getValues()
+
+                this.activeEndDateTitle = `${endMonth}月${endDay}日`
+                this.activeEndTimeTitle = `${endTime.join(':')}`
             },
-            startTimeChange(picker,value,index){
+            startTimeChange(picker, value, index) {
                 this.activeStartTimeTitle = `${value.join(':')}`
             },
-            endTimeChange(picker,value,index){
+            endTimeChange(picker, value, index) {
                 this.activeEndTimeTitle = `${value.join(':')}`
             },
             back() {
@@ -244,14 +392,14 @@
             wxtzChange(value) {
                 console.log(value)
             },
-            txConfirm(value,index){
+            txConfirm(value, index) {
                 this.form.tixing = index
                 this.txCancel()
             },
-            txCancel(){
+            txCancel() {
                 this.showTixing = false
             },
-            startTimeOk(){
+            startTimeOk() {
                 let info = this.$refs.chooseStartDate.getSelected()
 
                 let year = info.year
@@ -265,11 +413,11 @@
 
                 this.startTime = `${month}月${day}日 ${weekDay} ${time.join(':')}`
 
-                this.form.startTime = `${year}-${month}-${day} ${time.join(':')}:00`
+                this.form.startTime = `${year}-${month}-${day} ${time.join(':')}`
 
                 this.showStartTime = false
             },
-            endTimeOk(){
+            endTimeOk() {
                 let info = this.$refs.chooseEndDate.getSelected()
 
                 let year = info.year
@@ -283,15 +431,35 @@
 
                 this.endTime = `${month}月${day}日 ${weekDay} ${time.join(':')}`
 
-                this.form.endTime = `${year}-${month}-${day} ${time.join(':')}:00`
+                this.form.endTime = `${year}-${month}-${day} ${time.join(':')}`
 
                 this.showEndTime = false
             },
-            startDateChange(name,title){
+            startDateChange(name, title) {
                 this.startDateShow = name === 'date'
+
+                // this.$nextTick(()=>{
+                //     let start = this.form.startTime
+                //     if(start){
+                //         let startRef = this.$refs.startTime
+                //
+                //         let values = start.split(' ')[1].split(':')
+                //         startRef.setValues(values)
+                //     }
+                // })
             },
-            endDateChange(name,title){
+            endDateChange(name, title) {
                 this.endDateShow = name === 'date'
+
+                // this.$nextTick(()=>{
+                //     let end = this.form.endTime
+                //     if(end){
+                //         let endRef = this.$refs.endTime
+                //
+                //         let values = end.split(' ')[1].split(':')
+                //         endRef.setValues(values)
+                //     }
+                // })
             }
         }
     }
@@ -306,10 +474,10 @@
             top: .4rem;
         }
 
-        .van-tabs{
+        .van-tabs {
             width: 50%;
 
-            .van-tabs__line{
+            .van-tabs__line {
                 border-radius: 2rem 2rem 0 0 !important;
             }
         }
@@ -371,7 +539,7 @@
                         vertical-align: sub;
                         margin-right: .15rem;
 
-                        &:last-child{
+                        &:last-child {
                             width: .3rem;
                             height: .3rem;
                         }
@@ -433,9 +601,10 @@
             font-size: .24rem;
         }
 
-        .choose_time{
+        .choose_time {
             position: relative;
-            .time_ok{
+
+            .time_ok {
                 position: absolute;
                 right: .3rem;
                 top: .25rem;
@@ -444,14 +613,14 @@
             }
         }
 
-        .save_btn{
-            background:linear-gradient(270deg,rgba(60,195,109,1) 0%,rgba(72,191,130,1) 100%);
-            border-radius:0.08rem;
+        .save_btn {
+            background: linear-gradient(270deg, rgba(60, 195, 109, 1) 0%, rgba(72, 191, 130, 1) 100%);
+            border-radius: 0.08rem;
             width: 92%;
             margin: auto;
             height: .88rem;
             line-height: .88rem;
-            color:#fff;
+            color: #fff;
             font-size: .3rem;
             text-align: center;
             position: absolute;

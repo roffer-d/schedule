@@ -7,12 +7,16 @@
                 <img v-else-if="item.type == 2" :src="jjImg"/>
                 <img v-else-if="item.type == 3" :src="ptImg"/>
             </div>
-            <div class="time">{{item.startTime}} - {{item.endTime}}</div>
+            <div class="time">{{item.startTime}} 至 {{item.endTime}}</div>
             <div class="tag">{{item.tag}}</div>
         </div>
 
         <van-popup v-model="showEditSchedule" class="edit_popup" position="right" :style="{ height: '100%',width:'100%' }">
-            <edit-schedule :data="editData" :close.sync="showEditSchedule"></edit-schedule>
+            <edit-schedule
+                    :data="editData"
+                    :close.sync="showEditSchedule"
+                    @onEdit="(form,resolve)=>{$emit('onEdit',form,resolve)}"
+            />
         </van-popup>
     </div>
 </template>

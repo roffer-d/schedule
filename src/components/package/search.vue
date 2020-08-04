@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <schedule-list :data="scheduleList" style="margin-top: .3rem"></schedule-list>
+        <schedule-list :data="scheduleList" @onEdit="onEdit" style="margin-top: .3rem"></schedule-list>
     </div>
 </template>
 
@@ -44,6 +44,9 @@
                 if(this.searchText.trim()){
                     this.$emit('onSearch',this.searchText,this.repeatSearch)
                 }
+            },
+            onEdit(form,resolve){
+                this.$emit('onEdit',form,resolve)
             },
             repeatSearch(list){
                 this.scheduleList = list

@@ -25,7 +25,7 @@
 
         <div class="add" v-if="edit" @click="showEditSchedule=true"><img :src="addImg"/>添加日程</div>
 
-        <schedule-list :data="data"></schedule-list>
+        <schedule-list :data="data" @onEdit="onEdit"></schedule-list>
 
         <van-popup v-model="showChooseDate" position="bottom" :style="{ height: '40%' }">
             <van-datetime-picker
@@ -47,7 +47,7 @@
         </van-popup>
 
         <van-popup v-model="showSearch" class="search_popup" position="right" :style="{ height: '100%',width:'100%' }">
-            <search :close.sync="showSearch" @onSearch="onSearch"></search>
+            <search :close.sync="showSearch" @onSearch="onSearch" @onEdit="onEdit"></search>
         </van-popup>
 
         <van-popup v-model="showSettings" class="settings_popup" position="right"
@@ -147,7 +147,8 @@
         methods: {
             /**
              * @desc 执行搜索
-             * @param {参数类型} 参数名称 参数介绍
+             * @param {String} val 输入的搜索内容
+             * @param {Function} resolve 搜索查询后，调用改函数把结果传入进行渲染搜索列表
              * @date 2020-08-03 17:10:41
              * @author Dulongfei
              *
@@ -155,8 +156,16 @@
             onSearch(val,resolve){
                this.$emit('onSearch',val,resolve)
             },
+            /**
+             * @desc 执行编辑
+             * @param {Object} form 输入的表单
+             * @param {Function} resolve 保存后，调用改函数把执行成功与否结果传入，true关闭表单页面
+             * @date 2020-08-03 17:12:33
+             * @author Dulongfei
+             *
+             */
             onEdit(form,resolve){
-
+                this.$emit('onEdit',form,resolve)
             },
             /**
              * @desc 执行设置时回调

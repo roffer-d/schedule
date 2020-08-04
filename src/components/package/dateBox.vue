@@ -10,7 +10,7 @@
                                 selected_day:item.selected,
                                 current_day:item.isCurrentDay
                              }"
-                 @click="selectDate(item)"
+                 @click="selectDate(item,index)"
                  v-for="(item,index) in dayList"
                  :key="index">
 
@@ -28,35 +28,35 @@
     export default {
         name: "dateBox",
         props: {
-            date:{
-                type:Date,
-                default:new Date()
+            date: {
+                type: Date,
+                default: new Date()
             },
-            showLunar:{
-                type:Boolean,
-                default:false
+            showLunar: {
+                type: Boolean,
+                default: false
             },
-            showPoint:{
-                type:Boolean,
-                default:false
+            showPoint: {
+                type: Boolean,
+                default: false
             }
         },
-        data(){
+        data() {
             return {
-                dayList:[],
-                selectedDate:null,
+                dayList: [],
+                selectedDate: null,
                 today: new Date(),
             }
         },
-        watch:{
-            date(){
+        watch: {
+            date() {
                 this.initDate()
             }
         },
         mounted() {
             this.initDate()
         },
-        methods:{
+        methods: {
             /**
              * @desc 初始化日期
              * @date 2020-07-31 15:31:55
@@ -93,6 +93,22 @@
                 return currentYear === year && currentMonth === month && currentDay === day
             },
             /**
+             * @desc 获取指定年月日是否是跟传入的日期匹配选中
+             * @param {Number} year 年份
+             * @param {Number} month 月份
+             * @param {Number} Number 天
+             * @date 2020-07-31 16:09:11
+             * @author Dulongfei
+             *
+             */
+            isSelectedDate(year, month, day){
+                let selectedYear = this.date.getFullYear()
+                let selectedMonth = this.date.getMonth() + 1
+                let selectedDay = this.date.getDate()
+
+                return selectedYear === year && selectedMonth === month && selectedDay === day
+            },
+            /**
              * @desc 填充前面的空余日期，例如传入的日期是从周三开始，那么前边会空出3个格子，此时应填充为上个月的最后三天
              * @param {Number} year 年份
              * @param {Number} month 月份
@@ -113,27 +129,28 @@
 
                     for (let i = start; i <= end; i++) {
                         let lunar = calendar.solar2lunar(cDate.getFullYear(), cDate.getMonth() + 1, i)
-                        let {cYear, cMonth, cDay, IMonthCn, IDayCn,nWeek} = lunar
+                        let {cYear, cMonth, cDay, IMonthCn, IDayCn, nWeek} = lunar
 
                         let isCurrent = this.isCurrentDate(cYear, cMonth, cDay)
+                        let isSelected = this.isSelectedDate(cYear, cMonth, cDay)
 
                         let day = {
-                            lunarInfo:lunar,
-                            date:i,
+                            lunarInfo: lunar,
+                            date: i,
                             day: i == 1 ? `${cMonth}月` : i,
-                            month:cMonth,
-                            year:cYear,
-                            week:nWeek,
+                            month: cMonth,
+                            year: cYear,
+                            week: nWeek,
                             lunar: IDayCn == '初一' ? IMonthCn : IDayCn,//农历
                             hasSchedule: false,//是否有日程
                             isCurrentMonth: false,//日期是否包含在当前月份中
                             isCurrentDay: isCurrent,//当前日期
-                            selected: isCurrent//选中的日期
+                            selected: isSelected//选中的日期
                         }
 
                         this.dayList.push(day)
 
-                        isCurrent && (this.selectedDate = day)//默认选中当前日期
+                        isSelected && (this.selectedDate = day)//默认选中当前日期
                     }
                 }
             },
@@ -150,27 +167,28 @@
 
                 for (let i = 1; i <= countOfMonth; i++) {
                     let lunar = calendar.solar2lunar(year, month, i)
-                    let {cYear, cMonth, cDay, IMonthCn, IDayCn,nWeek} = lunar
+                    let {cYear, cMonth, cDay, IMonthCn, IDayCn, nWeek} = lunar
 
                     let isCurrent = this.isCurrentDate(cYear, cMonth, cDay)
+                    let isSelected = this.isSelectedDate(cYear, cMonth, cDay)
 
                     let day = {
-                        lunarInfo:lunar,
+                        lunarInfo: lunar,
                         day: i == 1 ? `${cMonth}月` : i,
-                        date:i,
-                        month:cMonth,
-                        year:cYear,
-                        week:nWeek,
+                        date: i,
+                        month: cMonth,
+                        year: cYear,
+                        week: nWeek,
                         lunar: IDayCn == '初一' ? IMonthCn : IDayCn,//农历
                         hasSchedule: i % 5 == 0,//是否有日程
                         isCurrentMonth: true,//日期是否包含在当前月份中
                         isCurrentDay: isCurrent,//当前日期
-                        selected: isCurrent//选中的日期
+                        selected: isSelected//选中的日期
                     }
 
                     this.dayList.push(day)
 
-                    isCurrent && (this.selectedDate = day)//默认选中当前日期
+                    isSelected && (this.selectedDate = day)//默认选中当前日期
                 }
             },
             /**
@@ -197,27 +215,28 @@
 
                 for (let i = start; i <= end; i++) {
                     let lunar = calendar.solar2lunar(cDate.getFullYear(), cDate.getMonth() + 1, i)
-                    let {cYear, cMonth, cDay, IMonthCn, IDayCn,nWeek} = lunar
+                    let {cYear, cMonth, cDay, IMonthCn, IDayCn, nWeek} = lunar
 
                     let isCurrent = this.isCurrentDate(cYear, cMonth, cDay)
+                    let isSelected = this.isSelectedDate(cYear, cMonth, cDay)
 
                     let day = {
-                        lunarInfo:lunar,
+                        lunarInfo: lunar,
                         day: i == 1 ? `${cMonth}月` : i,
-                        date:i,
-                        month:cMonth,
-                        year:cYear,
-                        week:nWeek,
+                        date: i,
+                        month: cMonth,
+                        year: cYear,
+                        week: nWeek,
                         lunar: IDayCn == '初一' ? IMonthCn : IDayCn,//农历
                         hasSchedule: false,//是否有日程
                         isCurrentMonth: false,//日期是否包含在当前月份中
                         isCurrentDay: isCurrent,//当前日期
-                        selected: isCurrent//选中的日期
+                        selected: isSelected//选中的日期
                     }
 
                     this.dayList.push(day)
 
-                    isCurrent && (this.selectedDate = day)//默认选中当前日期
+                    isSelected && (this.selectedDate = day)//默认选中当前日期
                 }
             },
             /**
@@ -251,8 +270,8 @@
              * @author Dulongfei
              *
              */
-            selectDate(item) {
-                this.dayList.forEach((day) => {
+            selectDate(item, index) {
+                this.dayList.forEach((day, i) => {
                     day.selected = false
                 })
 
@@ -260,7 +279,7 @@
 
                 this.selectedDate = item
 
-                this.$emit('select',item)
+                this.$emit('select', item)
             },
             /**
              * @desc 设置选中日期
@@ -271,8 +290,9 @@
              * @author Dulongfei
              *
              */
-            setSelected(year,month,day){
-                this.date = new Date(year,month-1,day)
+            setSelected(year, month, day) {
+                let date = new Date(year, month - 1, day)
+                this.initDate(date)
             },
             /**
              * @desc 获取选中日期
@@ -280,7 +300,7 @@
              * @author Dulongfei
              *
              */
-            getSelected(){
+            getSelected() {
                 return this.selectedDate
             }
         }
