@@ -1,9 +1,9 @@
 {
   "name": "vue-mobile-schedule",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "private": false,
   "description": "Vue mobile worker schedule",
-  "main": "lib/vue-mobile-schedule.common.js",
+  "main": "lib/vue-mobile-schedule.umd.js",
   "keywords": [
     "vue",
     "mobile",
