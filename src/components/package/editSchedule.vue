@@ -243,13 +243,10 @@
                     this.startDateData[0].values.push(value)
                     this.endDateData[0].values.push(value)
 
-                    console.log(startHour ,value)
                     if(startHour === value){
-                        console.log(startHour)
                         this.startDateData[0].defaultIndex = i
                     }
                     if(endHour === value){
-                        console.log(endHour)
                         this.endDateData[0].defaultIndex = i
                     }
                 }

@@ -136,7 +136,6 @@
             return {
                 backImg, searchImg, settingsImg, addImg,
 
-                chooseDate: new Date(),
                 pickerDate: new Date(),
                 showChooseDate: false,
                 showEditSchedule: false,
@@ -161,19 +160,22 @@
             }
         },
         mounted() {
-            this.getYearAndMonth(this.chooseDate)
-
-            let now = new Date()
-            let prev = new Date(now.getFullYear(), now.getMonth() - 1)
-            let next = new Date(now.getFullYear(), now.getMonth() + 1)
-            this.swiperList = [prev, now, next]
-
-            this.swiper.slideTo(1, 1000, false)
+            this.initSwiperItem()
         },
         methods: {
+            initSwiperItem(date){
+                let now = date || new Date()
+                let prev = new Date(now.getFullYear(), now.getMonth() - 1)
+                let next = new Date(now.getFullYear(), now.getMonth() + 1)
+                this.swiperList = [prev, now, next]
+
+                this.swiper.slideTo(1, 1000, false)
+
+                this.getYearAndMonth(now)
+            },
             /**
              * @desc 轮播项滑动结束执行
-             * @param {Number} index 当前轮播项的索引值
+             * @param {Object} swiper 当前轮播项
              * @date 2020-08-04 17:17:11
              * @author Dulongfei
              *
@@ -183,8 +185,6 @@
 
                 let {activeIndex, swipeDirection} = swiper
 
-                console.log(activeIndex)
-
                 let date = this.swiperList[activeIndex]
                 let year = date.getFullYear()
                 let month = date.getMonth()
@@ -192,17 +192,10 @@
                 this.getYearAndMonth(date)
 
                 if (activeIndex == this.swiperList.length - 1) {
-                    // this.swiperList.splice(0, 1)
                     this.swiperList.push(new Date(year, month + 1))
                 } else if (activeIndex == 0) {
-                    // this.swiperList.pop()
                     this.swiperList.unshift(new Date(year, month - 1))
-                }
-
-                if (swipeDirection === 'prev') {
-                    this.swiper.slideTo(activeIndex + 1, 1000, false)
-                } else {
-                    this.swiper.slideTo(activeIndex - 1, 1000, false)
+                    this.swiper.slideTo(1, 0, false)
                 }
             },
             /**
@@ -278,7 +271,8 @@
              */
             dateConfirm(value) {
                 // this.$refs.dateBox.initDate(value)
-                this.chooseDate = value
+
+                this.initSwiperItem(value)
                 this.dateCancel()
             },
             /**
@@ -310,7 +304,7 @@
              *
              */
             backToday() {
-                this.chooseDate = new Date()
+                this.initSwiperItem()
             },
             /**
              * @desc 返回上一页
