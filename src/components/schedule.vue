@@ -14,12 +14,17 @@
                     <span @click="showChooseDate=true">{{currentDateStr}}</span>
                     <span class="today" @click="backToday">今天</span>
                 </div>
-                <date-box
-                        :date.sync="chooseDate"
-                        :show-lunar="lunar"
-                        :show-point="point"
-                        ref="dateBox"
-                        @select="dateSelected"/>
+                <swiper ref="mySwiper" :options="swiperOptions" @slideChangeTransitionEnd="swiperEnd">
+                    <swiper-slide v-for="(item, index) in swiperList" :key="index">
+                        <date-box
+                                :date.sync="item"
+                                :show-lunar="lunar"
+                                :show-point="point"
+                                ref="dateBox"
+                                :key="`${index}-${index}`"
+                                @select="dateSelected"/>
+                    </swiper-slide>
+                </swiper>
             </div>
         </more>
 
@@ -69,6 +74,10 @@
     import searchImg from "@/assets/images/schedule/search.png";
     import settingsImg from "@/assets/images/schedule/settings.png";
     import addImg from "@/assets/images/schedule/add.png";
+
+    import {Swiper, SwiperSlide} from 'vue-awesome-swiper'
+    // If you use Swiper 6.0.0 or higher
+    import 'swiper/swiper-bundle.css'
 
     export default {
         name: "schedule",
@@ -122,7 +131,7 @@
                 defalut: () => []
             }
         },
-        components: {more, scheduleList, dateBox, editSchedule, search, settings},
+        components: {more, scheduleList, dateBox, editSchedule, search, settings, Swiper, SwiperSlide},
         data() {
             return {
                 backImg, searchImg, settingsImg, addImg,
@@ -133,7 +142,12 @@
                 showEditSchedule: false,
                 showSettings: false,
                 showSearch: false,
-                currentDateStr: ''
+                currentDateStr: '',
+                swiperList: [],
+                swiperOptions: {
+                    observer: true,//修改swiper自己或子元素时，自动初始化swiper
+                    observeParents: true//修改swiper的父元素时，自动初始化swiper
+                }
             }
         },
         watch: {
@@ -141,10 +155,68 @@
                 this.getYearAndMonth(date)
             }
         },
+        computed: {
+            swiper() {
+                return this.$refs.mySwiper.$swiper
+            }
+        },
         mounted() {
             this.getYearAndMonth(this.chooseDate)
+
+            let now = new Date()
+            let prev = new Date(now.getFullYear(), now.getMonth() - 1)
+            let next = new Date(now.getFullYear(), now.getMonth() + 1)
+            this.swiperList = [prev, now, next]
+
+            this.swiper.slideTo(1, 1000, false)
         },
         methods: {
+            /**
+             * @desc 轮播项滑动结束执行
+             * @param {Number} index 当前轮播项的索引值
+             * @date 2020-08-04 17:17:11
+             * @author Dulongfei
+             *
+             */
+            swiperEnd(swiper) {
+                console.log(swiper)
+
+                let {activeIndex, swipeDirection} = swiper
+
+                console.log(activeIndex)
+
+                let date = this.swiperList[activeIndex]
+                let year = date.getFullYear()
+                let month = date.getMonth()
+
+                this.getYearAndMonth(date)
+
+                if (activeIndex == this.swiperList.length - 1) {
+                    // this.swiperList.splice(0, 1)
+                    this.swiperList.push(new Date(year, month + 1))
+                } else if (activeIndex == 0) {
+                    // this.swiperList.pop()
+                    this.swiperList.unshift(new Date(year, month - 1))
+                }
+
+                if (swipeDirection === 'prev') {
+                    this.swiper.slideTo(activeIndex + 1, 1000, false)
+                } else {
+                    this.swiper.slideTo(activeIndex - 1, 1000, false)
+                }
+            },
+            /**
+             * @desc 获取当前日期标题
+             * @param {Date} date 日期
+             * @date 2020-08-04 17:16:33
+             * @author Dulongfei
+             *
+             */
+            getYearAndMonth(date) {
+                let year = date.getFullYear()
+                let month = date.getMonth()
+                this.currentDateStr = `${year}年${('0' + (month + 1)).slice(-2)}月`
+            },
             /**
              * @desc 执行搜索
              * @param {String} val 输入的搜索内容
@@ -153,8 +225,8 @@
              * @author Dulongfei
              *
              */
-            onSearch(val,resolve){
-               this.$emit('onSearch',val,resolve)
+            onSearch(val, resolve) {
+                this.$emit('onSearch', val, resolve)
             },
             /**
              * @desc 执行编辑
@@ -164,8 +236,8 @@
              * @author Dulongfei
              *
              */
-            onEdit(form,resolve){
-                this.$emit('onEdit',form,resolve)
+            onEdit(form, resolve) {
+                this.$emit('onEdit', form, resolve)
             },
             /**
              * @desc 执行设置时回调
@@ -174,8 +246,8 @@
              * @author Dulongfei
              *
              */
-            onSettings(item){
-                this.$emit('onSettings',item)
+            onSettings(item) {
+                this.$emit('onSettings', item)
             },
             /**
              * @desc 选中日期回调函数
@@ -186,11 +258,6 @@
              */
             dateSelected(info) {
                 this.$emit('onSelect', info)
-            },
-            getYearAndMonth(date) {
-                let year = date.getFullYear()
-                let month = date.getMonth() + 1
-                this.currentDateStr = `${year}年${('0' + month).slice(-2)}月`
             },
             /**
              * @desc 选择日期change事件
