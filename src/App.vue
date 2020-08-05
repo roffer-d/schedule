@@ -8,6 +8,7 @@
             @onSettings="onSettings"
             @onEdit="onEdit"
             @onDel="onDel"
+            push="1"
             :data="scheduleList"
             local lunar point search edit settings
         />

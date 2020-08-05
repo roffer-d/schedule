@@ -9,7 +9,13 @@
                 <div class="title">通用设置</div>
                 <div class="item">
                     <div>是否接收每日微信推送</div>
-                    <van-switch v-model="isPush" active-color="#3EC271" inactive-color="#DFE5F0" size=".35rem" @change="(val)=>{pushChange('isTs',val)}"/>
+                    <van-switch v-model="isPush"
+                                active-value="1"
+                                inactive-value="0"
+                                active-color="#3EC271"
+                                inactive-color="#DFE5F0"
+                                size=".35rem"
+                                @change="(val)=>{pushChange('isPush',val)}"/>
                 </div>
             </div>
         </div>
@@ -21,20 +27,23 @@
 
     export default {
         name: "settingsSchedule",
-        props:['data'],
-        data(){
+        props: ['push'],
+        data() {
             return {
                 backImg,
 
-                isPush:false
+                isPush: this.push || '1',//1推送，0不推送
             }
         },
         mounted() {
 
         },
-        methods:{
-            pushChange(key,value){
-                this.$emit('onSettings',{key,value})
+        methods: {
+            pushChange(key, value) {
+                this.$emit('onSettings', {key, value})
+            },
+            setProperty(key, value) {
+                this[key] = value
             },
             back() {
                 this.$emit('update:close', false)
@@ -48,7 +57,7 @@
     }
 </style>
 <style scoped lang="less">
-    .settings_schedule{
+    .settings_schedule {
         .bar {
             height: .94rem;
             display: flex;
@@ -88,16 +97,16 @@
                 padding: .3rem;
                 font-family: PingFangSC-Regular, PingFang SC;
                 font-weight: 400;
-                color:#434B65;
+                color: #434B65;
                 border-top: .02rem solid #EFF1F4;
 
-                .title{
+                .title {
                     margin-bottom: .3rem;
                     font-size: .3rem;
                     font-weight: 500;
                 }
 
-                .item{
+                .item {
                     font-size: .28rem;
                     display: flex;
                     justify-content: space-between;

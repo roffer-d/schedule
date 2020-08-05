@@ -57,7 +57,7 @@
 
         <van-popup v-model="showSettings" class="settings_popup" position="right"
                    :style="{ height: '100%',width:'100%' }">
-            <settings :close.sync="showSettings" @onSettings="onSettings"></settings>
+            <settings :close.sync="showSettings" @onSettings="onSettings" :push="push"></settings>
         </van-popup>
     </div>
 </template>
@@ -129,6 +129,11 @@
             data: {
                 type: Array,
                 defalut: () => []
+            },
+            /** 是否推送微信通知 **/
+            push: {
+                type: String,
+                default: '1'
             }
         },
         components: {more, scheduleList, dateBox, editSchedule, search, settings, Swiper, SwiperSlide},
@@ -163,7 +168,7 @@
             this.initSwiperItem()
         },
         methods: {
-            initSwiperItem(date){
+            initSwiperItem(date) {
                 let now = date || new Date()
                 let prev = new Date(now.getFullYear(), now.getMonth() - 1)
                 let next = new Date(now.getFullYear(), now.getMonth() + 1)
@@ -230,7 +235,7 @@
              *
              */
             onEdit(form, resolve) {
-                let refresh = (isSuccess)=>{
+                let refresh = (isSuccess) => {
                     resolve(isSuccess)
                     isSuccess && this.initSwiperItem()
                 }
@@ -245,7 +250,7 @@
              *
              */
             onDel(info, resolve) {
-                let refresh = (isSuccess)=>{
+                let refresh = (isSuccess) => {
                     resolve(isSuccess)
                     isSuccess && this.initSwiperItem()
                 }
