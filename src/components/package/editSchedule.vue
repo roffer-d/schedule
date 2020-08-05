@@ -39,14 +39,19 @@
             <div class="row">
                 <div class="title" @click="showTixing = true">
                     <img :src="tixingImg"/>
-                    <span class="name">{{form.noticeType == 0 ? txData[form.noticeType] : `提前${txData[form.noticeType]}`}}</span>
+                    <span class="name">{{noticeTitle}}</span>
                     <img class="right" :src="rightImg"/>
                 </div>
                 <div class="line" style="margin-top: 0;"></div>
                 <div class="title">
                     <img :src="wechatImg"/>
                     <span class="name">微信通知</span>
-                    <van-switch v-model="form.isPush" active-color="#3EC271" inactive-color="#DFE5F0" size=".35rem"
+                    <van-switch v-model="form.isPush"
+                                active-value="1"
+                                inactive-value="0"
+                                active-color="#3EC271"
+                                inactive-color="#DFE5F0"
+                                size=".35rem"
                                 @change="isPushChange"/>
                 </div>
             </div>
@@ -55,7 +60,7 @@
         <div class="save_btn" @click="save">保存</div>
 
         <van-popup v-model="showTixing" position="bottom" :style="{ height: '45%' }">
-            <van-picker show-toolbar title="提前通知" :columns="txData" :default-index="form.noticeType" @confirm="txConfirm"
+            <van-picker show-toolbar title="提前通知" :columns="txData" :default-index="noticeDefaultIndex" @confirm="txConfirm"
                         @cancel="txCancel"/>
         </van-popup>
 
@@ -115,6 +120,26 @@
             }
         },
         components: {dateBox},
+        computed:{
+            noticeTitle(){
+                if(this.form.noticeType == '0'){
+                    return this.txData[0].text
+                }else{
+                    return this.txData.filter(item=>{
+                        return item.value == this.form.noticeType
+                    })[0].text
+                }
+            },
+            noticeDefaultIndex(){
+                let index = 0;
+                this.txData.forEach((item,idx)=>{
+                    if(this.form.noticeType == item.value){
+                        index = idx
+                    }
+                })
+                return index
+            }
+        },
         data() {
             return {
                 backImg, titleImg, timeImg, rightImg, tixingImg, wechatImg,delImg,
@@ -124,8 +149,8 @@
                     title: '',
                     startTime: '',
                     endTime: '',
-                    noticeType: 0,
-                    isPush: false,
+                    noticeType: '0',//按时提醒
+                    isPush: '1',//0关闭，1打开
                 },
 
                 activeStartDateTitle: '',
@@ -149,7 +174,13 @@
                 showEndTime: false,
                 startDateShow: true,
                 endDateShow: true,
-                txData: ['按时通知', '一刻钟', '半小时', '一小时', '两小时'],
+                txData: [
+                    {text:'按时通知',value:'0'},
+                    {text:'一刻钟',value:'15'},
+                    {text:'半小时',value:'30'},
+                    {text:'一小时',value:'60'},
+                    {text:'两小时',value:'120'},
+                ],
                 weeks: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
                 startDateData: [
                     {
@@ -314,8 +345,8 @@
                     title: '',
                     startTime: '',
                     endTime: '',
-                    noticeType: 0,
-                    isPush: false,
+                    noticeType: '0',//按时提醒
+                    isPush: '1',//0关闭，1打开
                 }
 
                 this.activeStartDateTitle = ''
@@ -416,8 +447,8 @@
             isPushChange(value) {
                 console.log(value)
             },
-            txConfirm(value, index) {
-                this.form.noticeType = index
+            txConfirm(item, index) {
+                this.form.noticeType = item.value
                 this.txCancel()
             },
             txCancel() {
