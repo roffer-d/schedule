@@ -30,7 +30,7 @@
 
         <div class="add" v-if="edit" @click="showEditSchedule=true"><img :src="addImg"/>添加日程</div>
 
-        <schedule-list :data="data" @onEdit="onEdit"></schedule-list>
+        <schedule-list :data="data" @onEdit="onEdit" @onDel="onDel"></schedule-list>
 
         <van-popup v-model="showChooseDate" position="bottom" :style="{ height: '40%' }">
             <van-datetime-picker
@@ -48,7 +48,7 @@
 
         <van-popup v-model="showEditSchedule" class="edit_popup" position="right"
                    :style="{ height: '100%',width:'100%' }">
-            <edit-schedule :close.sync="showEditSchedule" @onEdit="onEdit"></edit-schedule>
+            <edit-schedule :close.sync="showEditSchedule" @onEdit="onEdit" @onDel="onDel"></edit-schedule>
         </van-popup>
 
         <van-popup v-model="showSearch" class="search_popup" position="right" :style="{ height: '100%',width:'100%' }">
@@ -230,7 +230,26 @@
              *
              */
             onEdit(form, resolve) {
-                this.$emit('onEdit', form, resolve)
+                let refresh = (isSuccess)=>{
+                    resolve(isSuccess)
+                    isSuccess && this.initSwiperItem()
+                }
+                this.$emit('onEdit', form, refresh)
+            },
+            /**
+             * @desc 执行删除
+             * @param {Object} info 要删除的日程对象
+             * @param {Function} resolve 删除后，调用改函数把执行成功与否结果传入，true关闭表单页面
+             * @date 2020-08-03 17:12:33
+             * @author Dulongfei
+             *
+             */
+            onDel(info, resolve) {
+                let refresh = (isSuccess)=>{
+                    resolve(isSuccess)
+                    isSuccess && this.initSwiperItem()
+                }
+                this.$emit('onDel', info, refresh)
             },
             /**
              * @desc 执行设置时回调

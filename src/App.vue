@@ -7,6 +7,7 @@
             @onSearch="onSearch"
             @onSettings="onSettings"
             @onEdit="onEdit"
+            @onDel="onDel"
             :data="scheduleList"
             local lunar point search edit settings
         />
@@ -26,9 +27,9 @@
                 minDate: new Date(),
                 maxDate: new Date(2100, 11, 1),
                 scheduleList: [
-                    {name: '用户模块任务列表数据提交1', startTime: '2020-08-05 10:00', endTime: '2020-08-05 12:00', type: 1, tag: '智慧机房PPT绘制1',tixing:3,wxtz:true},
-                    {name: '用户模块任务列表数据提交2', startTime: '2020-08-05 13:00', endTime: '2020-08-05 14:00', type: 2, tag: '智慧机房PPT绘制2',tixing:1,wxtz:false},
-                    {name: '用户模块任务列表数据提交3', startTime: '2020-08-05 15:00', endTime: '2020-08-05 16:00', type: 3, tag: '智慧机房PPT绘制3',tixing:2,wxtz:false},
+                    {title: '用户模块任务列表数据提交1', startTime: '2020-08-05 10:00', endTime: '2020-08-05 12:00', type: 1, tag: '智慧机房PPT绘制1',noticeType:3,isPush:true},
+                    {title: '用户模块任务列表数据提交2', startTime: '2020-08-05 13:00', endTime: '2020-08-05 14:00', type: 2, tag: '智慧机房PPT绘制2',noticeType:1,isPush:false},
+                    {title: '用户模块任务列表数据提交3', startTime: '2020-08-05 15:00', endTime: '2020-08-05 16:00', type: 3, tag: '智慧机房PPT绘制3',noticeType:2,isPush:false},
                 ]
             }
         },
@@ -46,9 +47,9 @@
              */
             onSearch(inputVal, resolve){
                 resolve([
-                    {name:'用户模块任务列表数据提交4',startTime:'2020-05-04 10:00',endTime:'2020-08-05 12:00',type:1,tag:'智慧机房PPT绘制4',tixing:3,wxtz:true},
-                    {name:'用户模块任务列表数据提交5',startTime:'2020-05-04 13:00',endTime:'2020-08-05 14:00',type:2,tag:'智慧机房PPT绘制5',tixing:1,wxtz:false},
-                    {name:'用户模块任务列表数据提交6',startTime:'2020-05-04 15:00',endTime:'2020-08-05 16:00',type:3,tag:'智慧机房PPT绘制6',tixing:2,wxtz:false}
+                    {title:'用户模块任务列表数据提交4',startTime:'2020-05-04 10:00',endTime:'2020-08-05 12:00',type:1,tag:'智慧机房PPT绘制4',noticeType:3,isPush:true},
+                    {title:'用户模块任务列表数据提交5',startTime:'2020-05-04 13:00',endTime:'2020-08-05 14:00',type:2,tag:'智慧机房PPT绘制5',noticeType:1,isPush:false},
+                    {title:'用户模块任务列表数据提交6',startTime:'2020-05-04 15:00',endTime:'2020-08-05 16:00',type:3,tag:'智慧机房PPT绘制6',noticeType:2,isPush:false}
                 ])
             },
             /**
@@ -82,6 +83,18 @@
              */
             onSelect(info){
                 console.log(info)
+            },
+            /**
+             * @desc 删除日程
+             * @param {Object} info 要删除的日期对象
+             * @param {Function} resolve 删除数据后，调用此方法，参数传递true，关闭编辑页面，否则无操作
+             * @date 2020-08-03 16:30:48
+             * @author Dulongfei
+             *
+             */
+            onDel(info,resolve){
+
+                resolve(true)
             }
         }
     };

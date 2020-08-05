@@ -2,7 +2,7 @@
     <div class="schedule_list">
         <div class="item" v-for="(item,index) in data" :key="index" @click="openEdit(item)">
             <div class="name">
-                {{item.name}}
+                {{item.title}}
                 <img v-if="item.type == 1" :src="fcjjImg"/>
                 <img v-else-if="item.type == 2" :src="jjImg"/>
                 <img v-else-if="item.type == 3" :src="ptImg"/>
@@ -16,6 +16,7 @@
                     :data="editData"
                     :close.sync="showEditSchedule"
                     @onEdit="(form,resolve)=>{$emit('onEdit',form,resolve)}"
+                    @onDel="(info,resolve)=>{$emit('onDel',info,resolve)}"
             />
         </van-popup>
     </div>

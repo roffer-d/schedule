@@ -3,6 +3,7 @@
         <div class="bar">
             <div class="back" @click="back"><img :src="backImg"/></div>
             <div class="title">{{this.data?'编辑':'新建'}}日程</div>
+            <div class="func" v-if="!!this.data" @click="delSchedule"><img :src="delImg" /></div>
         </div>
         <div class="ctx">
             <div class="row">
@@ -11,7 +12,7 @@
                     <span class="name">标题</span>
                 </div>
                 <div class="input">
-                    <input type="text" v-model="form.name" placeholder="请输入标题"/>
+                    <input type="text" v-model="form.title" placeholder="请输入标题"/>
                 </div>
             </div>
             <div class="row">
@@ -38,15 +39,15 @@
             <div class="row">
                 <div class="title" @click="showTixing = true">
                     <img :src="tixingImg"/>
-                    <span class="name">{{form.tixing == 0 ? txData[form.tixing] : `提前${txData[form.tixing]}`}}</span>
+                    <span class="name">{{form.noticeType == 0 ? txData[form.noticeType] : `提前${txData[form.noticeType]}`}}</span>
                     <img class="right" :src="rightImg"/>
                 </div>
                 <div class="line" style="margin-top: 0;"></div>
                 <div class="title">
                     <img :src="wechatImg"/>
                     <span class="name">微信通知</span>
-                    <van-switch v-model="form.wxtz" active-color="#3EC271" inactive-color="#DFE5F0" size=".35rem"
-                                @change="wxtzChange"/>
+                    <van-switch v-model="form.isPush" active-color="#3EC271" inactive-color="#DFE5F0" size=".35rem"
+                                @change="isPushChange"/>
                 </div>
             </div>
         </div>
@@ -54,7 +55,7 @@
         <div class="save_btn" @click="save">保存</div>
 
         <van-popup v-model="showTixing" position="bottom" :style="{ height: '45%' }">
-            <van-picker show-toolbar title="提前通知" :columns="txData" :default-index="form.tixing" @confirm="txConfirm"
+            <van-picker show-toolbar title="提前通知" :columns="txData" :default-index="form.noticeType" @confirm="txConfirm"
                         @cancel="txCancel"/>
         </van-popup>
 
@@ -100,6 +101,7 @@
     import rightImg from '@/assets/images/schedule/right.png'
     import tixingImg from '@/assets/images/schedule/tixing.png'
     import wechatImg from '@/assets/images/schedule/wechat.png'
+    import delImg from '@/assets/images/schedule/delete.png'
 
     Vue.use(Toast);
 
@@ -115,14 +117,15 @@
         components: {dateBox},
         data() {
             return {
-                backImg, titleImg, timeImg, rightImg, tixingImg, wechatImg,
+                backImg, titleImg, timeImg, rightImg, tixingImg, wechatImg,delImg,
 
                 form: {
-                    name: '',
+                    id:'',
+                    title: '',
                     startTime: '',
                     endTime: '',
-                    tixing: 0,
-                    wxtz: false,
+                    noticeType: 0,
+                    isPush: false,
                 },
 
                 activeStartDateTitle: '',
@@ -265,6 +268,9 @@
                     }
                 }
             },
+            delSchedule(){
+                this.$emit('del',this.data,this.afterSave)
+            },
             /**
              * @desc 保存事件
              * @date 2020-08-04 10:40:28
@@ -272,9 +278,9 @@
              *
              */
             save() {
-                const {name, startTime, endTime} = this.form
+                const {title, startTime, endTime} = this.form
 
-                if (!name) {
+                if (!title) {
                     Toast('标题不能为空！')
                     return;
                 } else if (!startTime) {
@@ -297,7 +303,28 @@
              *
              */
             afterSave(isSuccess) {
-                isSuccess && this.back()
+                if(isSuccess){
+                    this.clearForm()
+                    this.back()
+                }
+            },
+            clearForm(){
+                this.form = {
+                    id:'',
+                    title: '',
+                    startTime: '',
+                    endTime: '',
+                    noticeType: 0,
+                    isPush: false,
+                }
+
+                this.activeStartDateTitle = ''
+                this.activeStartTimeTitle = ''
+                this.startTime = ''
+
+                this.activeEndDateTitle = ''
+                this.activeEndTimeTitle = ''
+                this.endTime = ''
             },
             /**
              * @desc 显示开始时间弹窗
@@ -386,11 +413,11 @@
             back() {
                 this.$emit('update:close', false)
             },
-            wxtzChange(value) {
+            isPushChange(value) {
                 console.log(value)
             },
             txConfirm(value, index) {
-                this.form.tixing = index
+                this.form.noticeType = index
                 this.txCancel()
             },
             txCancel() {
@@ -510,6 +537,10 @@
                 font-size: .34rem;
                 font-weight: 500;
                 color: rgba(18, 27, 48, 1);
+            }
+
+            .func{
+                margin-right: .3rem;
             }
         }
 
