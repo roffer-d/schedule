@@ -27,9 +27,9 @@
                 minDate: new Date(),
                 maxDate: new Date(2100, 11, 1),
                 scheduleList: [
-                    {title: '用户模块任务列表数据提交1', startTime: '2020-08-05 10:00', endTime: '2020-08-05 12:00', type: 1, tag: '智慧机房PPT绘制1',noticeType:3,isPush:true},
-                    {title: '用户模块任务列表数据提交2', startTime: '2020-08-05 13:00', endTime: '2020-08-05 14:00', type: 2, tag: '智慧机房PPT绘制2',noticeType:1,isPush:false},
-                    {title: '用户模块任务列表数据提交3', startTime: '2020-08-05 15:00', endTime: '2020-08-05 16:00', type: 3, tag: '智慧机房PPT绘制3',noticeType:2,isPush:false},
+                    {id:1,title: '用户模块任务列表数据提交1', startTime: '2020-08-05 10:00', endTime: '2020-08-05 12:00', type: 1, tag: '智慧机房PPT绘制1',noticeType:3,isPush:true},
+                    {id:2,title: '用户模块任务列表数据提交2', startTime: '2020-08-05 13:00', endTime: '2020-08-05 14:00', type: 2, tag: '智慧机房PPT绘制2',noticeType:1,isPush:false},
+                    {id:3,title: '用户模块任务列表数据提交3', startTime: '2020-08-05 15:00', endTime: '2020-08-05 16:00', type: 3, tag: '智慧机房PPT绘制3',noticeType:2,isPush:false},
                 ]
             }
         },
@@ -47,9 +47,9 @@
              */
             onSearch(inputVal, resolve){
                 resolve([
-                    {title:'用户模块任务列表数据提交4',startTime:'2020-05-04 10:00',endTime:'2020-08-05 12:00',type:1,tag:'智慧机房PPT绘制4',noticeType:3,isPush:true},
-                    {title:'用户模块任务列表数据提交5',startTime:'2020-05-04 13:00',endTime:'2020-08-05 14:00',type:2,tag:'智慧机房PPT绘制5',noticeType:1,isPush:false},
-                    {title:'用户模块任务列表数据提交6',startTime:'2020-05-04 15:00',endTime:'2020-08-05 16:00',type:3,tag:'智慧机房PPT绘制6',noticeType:2,isPush:false}
+                    {id:4,title:'用户模块任务列表数据提交4',startTime:'2020-05-04 10:00',endTime:'2020-08-05 12:00',type:1,tag:'智慧机房PPT绘制4',noticeType:3,isPush:true},
+                    {id:5,title:'用户模块任务列表数据提交5',startTime:'2020-05-04 13:00',endTime:'2020-08-05 14:00',type:2,tag:'智慧机房PPT绘制5',noticeType:1,isPush:false},
+                    {id:6,title:'用户模块任务列表数据提交6',startTime:'2020-05-04 15:00',endTime:'2020-08-05 16:00',type:3,tag:'智慧机房PPT绘制6',noticeType:2,isPush:false}
                 ])
             },
             /**
@@ -93,7 +93,7 @@
              *
              */
             onDel(info,resolve){
-
+                console.log(info,'onDel')
                 resolve(true)
             }
         }

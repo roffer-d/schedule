@@ -269,7 +269,7 @@
                 }
             },
             delSchedule(){
-                this.$emit('del',this.data,this.afterSave)
+                this.$emit('onDel',this.data,this.afterSave)
             },
             /**
              * @desc 保存事件
