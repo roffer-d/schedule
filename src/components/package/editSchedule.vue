@@ -122,18 +122,18 @@
         components: {dateBox},
         computed:{
             noticeTitle(){
-                if(this.form.noticeType == '0'){
+                if(this.form.noticeTime == '0'){
                     return this.txData[0].text
                 }else{
                     return this.txData.filter(item=>{
-                        return item.value == this.form.noticeType
+                        return item.value == this.form.noticeTime
                     })[0].text
                 }
             },
             noticeDefaultIndex(){
                 let index = 0;
                 this.txData.forEach((item,idx)=>{
-                    if(this.form.noticeType == item.value){
+                    if(this.form.noticeTime == item.value){
                         index = idx
                     }
                 })
@@ -149,7 +149,7 @@
                     title: '',
                     startTime: '',
                     endTime: '',
-                    noticeType: '0',//按时提醒
+                    noticeTime: '0',//按时提醒
                     isPush: '1',//0关闭，1打开
                 },
 
@@ -345,7 +345,7 @@
                     title: '',
                     startTime: '',
                     endTime: '',
-                    noticeType: '0',//按时提醒
+                    noticeTime: '0',//按时提醒
                     isPush: '1',//0关闭，1打开
                 }
 
@@ -448,7 +448,7 @@
                 console.log(value)
             },
             txConfirm(item, index) {
-                this.form.noticeType = item.value
+                this.form.noticeTime = item.value
                 this.txCancel()
             },
             txCancel() {
