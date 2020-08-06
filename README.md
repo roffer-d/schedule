@@ -8,6 +8,7 @@ npm i -S vue-mobile-schedule
 ### Import
 ```
 import schedule from 'vue-mobile-schedule'
+import 'vue-mobile-schedule/lib/vue-mobile-schedule.css'
 Vue.use(schedule)
 ```
 
