@@ -108,11 +108,18 @@
     import wechatImg from '@/assets/images/schedule/wechat.png'
     import delImg from '@/assets/images/schedule/delete.png'
 
+    import api from "./api";
+
     Vue.use(Toast);
 
     export default {
         name: "editSchedule",
         props: {
+            /** 数据是否本地存储，true：添加的日程将存放在localStorage false：调用接口数据 **/
+            local: {
+                type: Boolean,
+                default: true
+            },
             data: {
                 type: Object,
                 default: () => {
@@ -300,7 +307,19 @@
                 }
             },
             delSchedule(){
-                this.$emit('onDel',this.data,this.afterSave)
+                if(this.local){
+                    this.$dialog.confirm({
+                        title: '删除提示',
+                        message: '确认删除该日程？'
+                    }).then(()=>{
+                        api.delSchedule(this.data.id)
+
+                        this.$emit('reload')
+                        this.back()
+                    })
+                }else{
+                    this.$emit('onDel',this.data,this.afterSave)
+                }
             },
             /**
              * @desc 保存事件
@@ -325,7 +344,19 @@
                     return;
                 }
 
-                this.$emit('onEdit', this.form, this.afterSave)
+                if(this.local){//本地存储
+                    if(!this.form.id){
+                        this.form.id = api.uuid()
+                        api.addSchedule(this.form)
+                    }else{
+                        api.editSchedule(this.form)
+                    }
+
+                    this.$emit('reload')
+                    this.back()
+                }else{
+                    this.$emit('onEdit', this.form, this.afterSave)
+                }
             },
             /**
              * @desc 保存后的操作
@@ -335,7 +366,6 @@
              */
             afterSave(isSuccess) {
                 if(isSuccess){
-                    this.clearForm()
                     this.back()
                 }
             },
@@ -442,6 +472,7 @@
                 this.activeEndTimeTitle = `${value.join(':')}`
             },
             back() {
+                this.clearForm()
                 this.$emit('update:close', false)
             },
             isPushChange(value) {
@@ -492,29 +523,9 @@
             },
             startDateChange(name, title) {
                 this.startDateShow = name === 'date'
-
-                // this.$nextTick(()=>{
-                //     let start = this.form.startTime
-                //     if(start){
-                //         let startRef = this.$refs.startTime
-                //
-                //         let values = start.split(' ')[1].split(':')
-                //         startRef.setValues(values)
-                //     }
-                // })
             },
             endDateChange(name, title) {
                 this.endDateShow = name === 'date'
-
-                // this.$nextTick(()=>{
-                //     let end = this.form.endTime
-                //     if(end){
-                //         let endRef = this.$refs.endTime
-                //
-                //         let values = end.split(' ')[1].split(':')
-                //         endRef.setValues(values)
-                //     }
-                // })
             }
         }
     }

@@ -20,7 +20,7 @@
                                 :date.sync="item"
                                 :show-lunar="lunar"
                                 :show-point="point"
-                                ref="dateBox"
+                                :ref="`dateBox_${index}`"
                                 :key="`${index}-${index}`"
                                 @select="dateSelected"/>
                     </swiper-slide>
@@ -30,7 +30,8 @@
 
         <div class="add" v-if="edit" @click="showEditSchedule=true"><img :src="addImg"/>添加日程</div>
 
-        <schedule-list :data="data" @onEdit="onEdit" @onDel="onDel"></schedule-list>
+        <schedule-list :data="local ? scheduleList : data" @onEdit="onEdit" @onDel="onDel"
+                       @reload="dateSelected"></schedule-list>
 
         <van-popup v-model="showChooseDate" position="bottom" :style="{ height: '40%' }">
             <van-datetime-picker
@@ -48,16 +49,17 @@
 
         <van-popup v-model="showEditSchedule" class="edit_popup" position="right"
                    :style="{ height: '100%',width:'100%' }">
-            <edit-schedule :close.sync="showEditSchedule" @onEdit="onEdit" @onDel="onDel"></edit-schedule>
+            <edit-schedule v-if="showEditSchedule" :close.sync="showEditSchedule" :local="local" @onEdit="onEdit" @onDel="onDel"
+                           @reload="dateSelected"/>
         </van-popup>
 
         <van-popup v-model="showSearch" class="search_popup" position="right" :style="{ height: '100%',width:'100%' }">
-            <search :close.sync="showSearch" @onSearch="onSearch" @onEdit="onEdit"></search>
+            <search v-if="showSearch" :close.sync="showSearch" :local="local" @onSearch="onSearch" @onEdit="onEdit"/>
         </van-popup>
 
         <van-popup v-model="showSettings" class="settings_popup" position="right"
                    :style="{ height: '100%',width:'100%' }">
-            <settings :close.sync="showSettings" @onSettings="onSettings" :push="push"></settings>
+            <settings :close.sync="showSettings" :local="local" @onSettings="onSettings" :push="push"/>
         </van-popup>
     </div>
 </template>
@@ -78,6 +80,8 @@
     import {Swiper, SwiperSlide} from 'vue-awesome-swiper'
     // If you use Swiper 6.0.0 or higher
     import 'swiper/swiper-bundle.css'
+
+    import api from "./package/api";
 
     export default {
         name: "schedule",
@@ -148,6 +152,8 @@
                 showSearch: false,
                 currentDateStr: '',
                 swiperList: [],
+                scheduleList: [],
+                selectedDate: null,
                 swiperOptions: {
                     // observer: true,//修改swiper自己或子元素时，自动初始化swiper
                     // observeParents: true//修改swiper的父元素时，自动初始化swiper
@@ -174,9 +180,13 @@
                 let next = new Date(now.getFullYear(), now.getMonth() + 1)
                 this.swiperList = [prev, now, next]
 
+                this.scheduleList = []
+
                 this.swiper.slideTo(1, 1000, false)
 
                 this.getYearAndMonth(now)
+
+                this.getDateRangeOfCurrent()
             },
             /**
              * @desc 轮播项滑动结束执行
@@ -202,6 +212,33 @@
                     this.swiperList.unshift(new Date(year, month - 1))
                     this.swiper.slideTo(1, 0, false)
                 }
+
+                this.getDateRangeOfCurrent()
+            },
+            /**
+             * @desc 获取当前页面显示的日期最小日期和最大日期，可以用在获取这个范围内的所有日程数据的查询条件
+             *                              如果需要在有日程的日期下边标记，
+             *                              则可以通过修改日期区间数据中的hasSchedule属性为true
+             * @date 2020-08-05 18:15:11
+             * @author Dulongfei
+             *
+             */
+            getDateRangeOfCurrent() {
+                this.$nextTick(() => {
+                    let dayList = this.$refs[`dateBox_${this.swiper.activeIndex}`][0].dayList
+
+                    if (this.local) {
+                        dayList.forEach(item => {
+                            let list = api.findByDateRange(item.fullDate)
+                            item.hasSchedule = list.length > 0
+                        })
+                    } else {
+                        let start = dayList[0]
+                        let end = dayList[dayList.length - 1]
+
+                        this.$emit('dateChange', start.fullDate, end.fullDate, dayList)
+                    }
+                })
             },
             /**
              * @desc 获取当前日期标题
@@ -224,7 +261,7 @@
              *
              */
             onSearch(val, resolve) {
-                this.$emit('onSearch', val, resolve)
+                !local && this.$emit('onSearch', val, resolve)
             },
             /**
              * @desc 执行编辑
@@ -237,9 +274,9 @@
             onEdit(form, resolve) {
                 let refresh = (isSuccess) => {
                     resolve(isSuccess)
-                    isSuccess && this.initSwiperItem()
+                    isSuccess && this.dateSelected()
                 }
-                this.$emit('onEdit', form, refresh)
+                !local && this.$emit('onEdit', form, refresh)
             },
             /**
              * @desc 执行删除
@@ -252,9 +289,9 @@
             onDel(info, resolve) {
                 let refresh = (isSuccess) => {
                     resolve(isSuccess)
-                    isSuccess && this.initSwiperItem()
+                    isSuccess && this.dateSelected()
                 }
-                this.$emit('onDel', info, refresh)
+                !local && this.$emit('onDel', info, refresh)
             },
             /**
              * @desc 执行设置时回调
@@ -264,7 +301,7 @@
              *
              */
             onSettings(item) {
-                this.$emit('onSettings', item)
+                !local && this.$emit('onSettings', item)
             },
             /**
              * @desc 选中日期回调函数
@@ -274,7 +311,18 @@
              *
              */
             dateSelected(info) {
-                this.$emit('onSelect', info)
+                if(!info){
+                    info = this.selectedDate
+                }else{
+                    this.selectedDate = info
+                }
+
+                if (this.local) {
+                    let list = api.findByDateRange(info.fullDate)
+                    this.scheduleList = list
+                } else {
+                    this.$emit('onSelect', info)
+                }
             },
             /**
              * @desc 选择日期change事件

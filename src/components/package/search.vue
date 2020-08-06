@@ -21,9 +21,17 @@
     import scheduleList from "./scheduleList";
     import backImg from '@/assets/images/schedule/back.png'
     import searchImg from '@/assets/images/schedule/search.png'
+    import api from "./api";
 
     export default {
         name: "search",
+        props:{
+            /** 数据是否本地存储，true：添加的日程将存放在localStorage false：调用接口数据 **/
+            local: {
+                type: Boolean,
+                default: true
+            },
+        },
         components:{scheduleList},
         data(){
             return {
@@ -38,11 +46,18 @@
         },
         methods:{
             back() {
+                this.searchText = ''
+                this.scheduleList = []
+
                 this.$emit('update:close', false)
             },
             search(){
                 if(this.searchText.trim()){
-                    this.$emit('onSearch',this.searchText,this.repeatSearch)
+                    if(this.local){
+                        this.scheduleList = api.query(this.searchText)
+                    }else{
+                        this.$emit('onSearch',this.searchText,this.repeatSearch)
+                    }
                 }
             },
             onEdit(form,resolve){

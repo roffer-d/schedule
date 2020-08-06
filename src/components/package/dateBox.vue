@@ -28,6 +28,11 @@
     export default {
         name: "dateBox",
         props: {
+            /** 数据是否本地存储，true：添加的日程将存放在localStorage false：调用接口数据 **/
+            local: {
+                type: Boolean,
+                default: true
+            },
             date: {
                 type: Date,
                 default: new Date()
@@ -101,7 +106,7 @@
              * @author Dulongfei
              *
              */
-            isSelectedDate(year, month, day){
+            isSelectedDate(year, month, day) {
                 let selectedYear = this.date.getFullYear()
                 let selectedMonth = this.date.getMonth() + 1
                 let selectedDay = this.date.getDate()
@@ -141,6 +146,7 @@
                             month: cMonth,
                             year: cYear,
                             week: nWeek,
+                            fullDate: `${cYear}-${('0' + cMonth).slice(-2)}-${('0' + cDay).slice(-2)}`,
                             lunar: IDayCn == '初一' ? IMonthCn : IDayCn,//农历
                             hasSchedule: false,//是否有日程
                             isCurrentMonth: false,//日期是否包含在当前月份中
@@ -180,6 +186,7 @@
                         year: cYear,
                         week: nWeek,
                         lunar: IDayCn == '初一' ? IMonthCn : IDayCn,//农历
+                        fullDate: `${cYear}-${('0' + cMonth).slice(-2)}-${('0' + cDay).slice(-2)}`,
                         hasSchedule: i % 5 == 0,//是否有日程
                         isCurrentMonth: true,//日期是否包含在当前月份中
                         isCurrentDay: isCurrent,//当前日期
@@ -228,6 +235,7 @@
                         year: cYear,
                         week: nWeek,
                         lunar: IDayCn == '初一' ? IMonthCn : IDayCn,//农历
+                        fullDate: `${cYear}-${('0' + cMonth).slice(-2)}-${('0' + cDay).slice(-2)}`,
                         hasSchedule: false,//是否有日程
                         isCurrentMonth: false,//日期是否包含在当前月份中
                         isCurrentDay: isCurrent,//当前日期

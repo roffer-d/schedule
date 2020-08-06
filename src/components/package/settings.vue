@@ -24,23 +24,43 @@
 
 <script>
     import backImg from '@/assets/images/schedule/back.png'
+    import api from "./api";
 
     export default {
         name: "settingsSchedule",
-        props: ['push'],
+        props:{
+            /** 数据是否本地存储，true：添加的日程将存放在localStorage false：调用接口数据 **/
+            local: {
+                type: Boolean,
+                default: true
+            },
+            /** 是否推送微信通知 **/
+            push: {
+                type: String,
+                default: '1'
+            },
+        },
         data() {
             return {
                 backImg,
 
-                isPush: this.push || '1',//1推送，0不推送
+                isPush: '1',//1推送，0不推送
             }
         },
         mounted() {
-
+            if (this.local) {
+                this.isPush = api.getGlobalPush() || '1'
+            }else{
+                this.isPush = this.push
+            }
         },
         methods: {
             pushChange(key, value) {
-                this.$emit('onSettings', {key, value})
+                if (this.local) {
+                    api.setGlobalPush(value)
+                } else {
+                    this.$emit('onSettings', {key, value})
+                }
             },
             setProperty(key, value) {
                 this[key] = value

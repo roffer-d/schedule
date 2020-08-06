@@ -14,7 +14,9 @@
         <van-popup v-model="showEditSchedule" class="edit_popup" position="right" :style="{ height: '100%',width:'100%' }">
             <edit-schedule
                     :data="editData"
+                    v-if="showEditSchedule"
                     :close.sync="showEditSchedule"
+                    @reload="$emit('reload')"
                     @onEdit="(form,resolve)=>{$emit('onEdit',form,resolve)}"
                     @onDel="(info,resolve)=>{$emit('onDel',info,resolve)}"
             />
