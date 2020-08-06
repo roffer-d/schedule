@@ -5,15 +5,14 @@
 npm i -S vue-mobile-schedule
 ```
 
-### How to use
+### Import
 ```
-main.js:
+import schedule from 'vue-mobile-schedule'
+Vue.use(schedule)
+```
 
-    import schedule from 'vue-mobile-schedule'
-    Vue.use(schedule)
-
-Useage:
-
+### Use
+```
 <template>
     <div id="app">
         <!-- 本地模式 local=true (默认) -->
