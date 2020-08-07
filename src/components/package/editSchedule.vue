@@ -258,26 +258,10 @@
         },
         methods: {
             startPickerClick(){
-                if(this.startDateShow){
-                    if(this.startPickerClickCount > 0){
-                        this.showStartPicker = true
-                    }
-
-                    this.startPickerClickCount = this.startPickerClickCount + 1
-                }else{
-                    this.startPickerClickCount = 0
-                }
+                this.showStartPicker = this.startDateShow
             },
             endPickerClick(){
-                if(this.endDateShow){
-                    if(this.endPickerClickCount > 0){
-                        this.showEndPicker = true
-                    }
-
-                    this.endPickerClickCount = this.endPickerClickCount + 1
-                }else{
-                    this.endPickerClickCount = 0
-                }
+                this.showEndPicker = this.endDateShow
             },
             startPickerConfirm(value) {
                 this.chooseStartDate = value
