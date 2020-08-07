@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <schedule-list :data="scheduleList" @onEdit="onEdit" style="margin-top: .3rem"></schedule-list>
+        <schedule-list :data="scheduleList" @onEdit="onEdit" style="margin-top: .3rem" @reload="search"></schedule-list>
     </div>
 </template>
 
@@ -49,6 +49,7 @@
                 this.searchText = ''
                 this.scheduleList = []
 
+                this.$emit('reload')
                 this.$emit('update:close', false)
             },
             search(){

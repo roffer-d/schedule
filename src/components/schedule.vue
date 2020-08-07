@@ -54,7 +54,7 @@
         </van-popup>
 
         <van-popup v-model="showSearch" class="search_popup" position="right" :style="{ height: '100%',width:'100%' }">
-            <search v-if="showSearch" :close.sync="showSearch" :local="local" @onSearch="onSearch" @onEdit="onEdit"/>
+            <search v-if="showSearch" :close.sync="showSearch" :local="local" @onSearch="onSearch" @onEdit="onEdit" @reload="dateSelected"/>
         </van-popup>
 
         <van-popup v-model="showSettings" class="settings_popup" position="right"
