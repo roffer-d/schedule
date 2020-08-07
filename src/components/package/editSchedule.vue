@@ -67,7 +67,7 @@
         <van-popup v-model="showStartTime" position="bottom" :style="{ height: '50%' }">
             <div class="choose_time">
                 <van-tabs v-model="activeStart" line-width=".5rem" line-height=".06rem" color="#40C273"
-                          @change="startDateChange">
+                          @change="startDateChange" @click.native="startPickerClick">
                     <van-tab name="date" :title="activeStartDateTitle"></van-tab>
                     <van-tab name="time" :title="activeStartTimeTitle"></van-tab>
                 </van-tabs>
@@ -82,7 +82,7 @@
         <van-popup v-model="showEndTime" position="bottom" :style="{ height: '50%' }">
             <div class="choose_time">
                 <van-tabs v-model="activeEnd" line-width=".5rem" line-height=".06rem" color="#40C273"
-                          @change="endDateChange">
+                          @change="endDateChange" @click.native="endPickerClick">
                     <van-tab name="date" :title="activeEndDateTitle"></van-tab>
                     <van-tab name="time" :title="activeEndTimeTitle"></van-tab>
                 </van-tabs>
@@ -91,6 +91,31 @@
             <date-box v-show="endDateShow" :date.sync="chooseEndDate" @select="selectedEndDate" ref="chooseEndDate"/>
             <van-picker v-show="!endDateShow" :columns="endDateData" :default-index="0" ref="endTime"
                         @change="endTimeChange"/>
+        </van-popup>
+
+        <van-popup v-model="showStartPicker" position="bottom" :style="{ height: '40%' }">
+            <van-datetime-picker
+                    v-model="startPickerDate"
+                    type="year-month"
+                    title="选择年月"
+                    @confirm="startPickerConfirm"
+                    @cancel="startPickerCancel"
+                    :formatter="dateFormatter"
+                    :min-date="startPickerMinDate"
+                    :max-date="startPickerMaxDate"
+            />
+        </van-popup>
+        <van-popup v-model="showEndPicker" position="bottom" :style="{ height: '40%' }">
+            <van-datetime-picker
+                    v-model="endPickerDate"
+                    type="year-month"
+                    title="选择年月"
+                    @confirm="endPickerConfirm"
+                    @cancel="endPickerCancel"
+                    :formatter="dateFormatter"
+                    :min-date="endPickerMinDate"
+                    :max-date="endPickerMaxDate"
+            />
         </van-popup>
     </div>
 </template>
@@ -150,6 +175,18 @@
         data() {
             return {
                 backImg, titleImg, timeImg, rightImg, tixingImg, wechatImg,delImg,
+
+                startPickerClickCount: 0,
+                showStartPicker: false,
+                startPickerDate: new Date(),
+                startPickerMinDate: new Date(),
+                startPickerMaxDate: new Date(2100, 11, 1),
+
+                endPickerClickCount: 0,
+                showEndPicker: false,
+                endPickerDate: new Date(),
+                endPickerMinDate: new Date(),
+                endPickerMaxDate: new Date(2100, 11, 1),
 
                 form: {
                     id:'',
@@ -220,6 +257,58 @@
             this.initTimeRange()
         },
         methods: {
+            startPickerClick(){
+                if(this.startDateShow){
+                    if(this.startPickerClickCount > 0){
+                        this.showStartPicker = true
+                    }
+
+                    this.startPickerClickCount = this.startPickerClickCount + 1
+                }else{
+                    this.startPickerClickCount = 0
+                }
+            },
+            endPickerClick(){
+                if(this.endDateShow){
+                    if(this.endPickerClickCount > 0){
+                        this.showEndPicker = true
+                    }
+
+                    this.endPickerClickCount = this.endPickerClickCount + 1
+                }else{
+                    this.endPickerClickCount = 0
+                }
+            },
+            startPickerConfirm(value) {
+                this.chooseStartDate = value
+                this.activeStartDateTitle = `${this.retYear(value.getFullYear())}${('0'+(value.getMonth()+1)).slice(-2)}月${('0'+value.getDate()).slice(-2)}日`
+                this.startPickerCancel()
+            },
+            startPickerCancel() {
+                this.showStartPicker = false
+            },
+            endPickerConfirm(value) {
+                this.chooseEndDate = value
+                this.activeEndDateTitle = `${this.retYear(value.getFullYear())}${('0'+(value.getMonth()+1)).slice(-2)}月${('0'+value.getDate()).slice(-2)}日`
+                this.endPickerCancel()
+            },
+            endPickerCancel() {
+                this.showEndPicker = false
+            },
+            /**
+             * @desc 选择日期格式化
+             * @date 2020-07-31 15:31:55
+             * @author Dulongfei
+             *
+             */
+            dateFormatter(type, val) {
+                if (type === 'year') {
+                    return `${val}年`;
+                } else if (type === 'month') {
+                    return `${val}月`;
+                }
+                return val;
+            },
             /**
              * @desc 通过传递过来的编辑数据，反显表单内容
              * @date 2020-08-04 10:39:28
@@ -247,13 +336,13 @@
                 let endWeek = new Date(endYear * 1, endMonth - 1, endDay * 1).getDay()
                 endWeek = this.weeks[endWeek === 7 ? 0 : endWeek]
 
-                this.activeStartDateTitle = `${startMonth}月${startDay}日`
+                this.activeStartDateTitle = `${this.retYear(startYear)}${startMonth}月${startDay}日`
                 this.activeStartTimeTitle = `${startTime}`
-                this.startTime = `${startMonth}月${startDay}日 ${startWeek} ${startTime}`
+                this.startTime = `${this.retYear(startYear)}${startMonth}月${startDay}日 ${startWeek} ${startTime}`
 
-                this.activeEndDateTitle = `${endMonth}月${endDay}日`
+                this.activeEndDateTitle = `${this.retYear(endYear)}${endMonth}月${endDay}日`
                 this.activeEndTimeTitle = `${endTime}`
-                this.endTime = `${endMonth}月${endDay}日 ${endWeek} ${endTime}`
+                this.endTime = `${this.retYear(endYear)}${endMonth}月${endDay}日 ${endWeek} ${endTime}`
             },
             /**
              * @desc 初始化时分的数据范围
@@ -454,7 +543,7 @@
                 let startDay = `0${info.date}`.slice(-2)
                 let startTime = this.$refs.startTime.getValues()
 
-                this.activeStartDateTitle = `${startMonth}月${startDay}日`
+                this.activeStartDateTitle = `${this.retYear(startYear)}${startMonth}月${startDay}日`
                 this.activeStartTimeTitle = `${startTime.join(':')}`
             },
             selectedEndDate(info) {
@@ -463,7 +552,7 @@
                 let endDay = `0${info.date}`.slice(-2)
                 let endTime = this.$refs.endTime.getValues()
 
-                this.activeEndDateTitle = `${endMonth}月${endDay}日`
+                this.activeEndDateTitle = `${this.retYear(endYear)}${endMonth}月${endDay}日`
                 this.activeEndTimeTitle = `${endTime.join(':')}`
             },
             startTimeChange(picker, value, index) {
@@ -495,10 +584,10 @@
                 let weekDay = this.weeks[info.week === 7 ? 0 : info.week]
                 let time = this.$refs.startTime.getValues()
 
-                this.activeStartDateTitle = `${month}月${day}日`
+                this.activeStartDateTitle = `${this.retYear(year)}${month}月${day}日`
                 this.activeStartTimeTitle = `${time.join(':')}`
 
-                this.startTime = `${month}月${day}日 ${weekDay} ${time.join(':')}`
+                this.startTime = `${year}年${month}月${day}日 ${weekDay} ${time.join(':')}`
 
                 this.form.startTime = `${year}-${month}-${day} ${time.join(':')}`
 
@@ -513,10 +602,10 @@
                 let weekDay = this.weeks[info.week === 7 ? 0 : info.week]
                 let time = this.$refs.endTime.getValues()
 
-                this.activeEndDateTitle = `${month}月${day}日`
+                this.activeEndDateTitle = `${this.retYear(year)}${month}月${day}日`
                 this.activeEndTimeTitle = `${time.join(':')}`
 
-                this.endTime = `${month}月${day}日 ${weekDay} ${time.join(':')}`
+                this.endTime = `${year}年${month}月${day}日 ${weekDay} ${time.join(':')}`
 
                 this.form.endTime = `${year}-${month}-${day} ${time.join(':')}`
 
@@ -527,6 +616,10 @@
             },
             endDateChange(name, title) {
                 this.endDateShow = name === 'date'
+            },
+            retYear(year){
+                let ret = new Date().getFullYear() == year ? '' : `${year}年`
+                return ret
             }
         }
     }
@@ -542,7 +635,7 @@
         }
 
         .van-tabs {
-            width: 50%;
+            width: 64%;
 
             .van-tabs__line {
                 border-radius: 2rem 2rem 0 0 !important;
