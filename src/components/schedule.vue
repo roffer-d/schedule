@@ -50,7 +50,7 @@
         <van-popup v-model="showEditSchedule" class="edit_popup" position="right"
                    :style="{ height: '100%',width:'100%' }">
             <edit-schedule v-if="showEditSchedule" :close.sync="showEditSchedule" :local="local" @onEdit="onEdit" @onDel="onDel"
-                           @reload="dateSelected"/>
+                           @reload="dateSelected" @selectedAppointDate="selectedAppointDate"/>
         </van-popup>
 
         <van-popup v-model="showSearch" class="search_popup" position="right" :style="{ height: '100%',width:'100%' }">
@@ -187,6 +187,10 @@
                 this.getYearAndMonth(now)
 
                 this.getDateRangeOfCurrent()
+
+                this.$nextTick(()=>{
+                    this.dateSelected()//初始化完成，默认显示当前日期下的日程数据
+                })
             },
             /**
              * @desc 轮播项滑动结束执行
@@ -311,10 +315,10 @@
              *
              */
             dateSelected(info) {
-                if(!info){
-                    info = this.selectedDate
-                }else{
-                    this.selectedDate = info
+                if (!info) {
+                    let dateBoxRef = this.$refs[`dateBox_${this.swiper.activeIndex}`][0]
+                    let selectedInfo = dateBoxRef.getSelected()
+                    info = selectedInfo
                 }
 
                 if (this.local) {
@@ -323,6 +327,17 @@
                 } else {
                     this.$emit('onSelect', info)
                 }
+            },
+            /**
+             * @desc 新增日程完成后调用该方法将日期切换到新增设置的开始日期，并获取日程数据
+             * @param {String} dateStr 新增日程的开始时间
+             * @date 2020-08-07 11:08:23
+             * @author Dulongfei
+             *
+             */
+            selectedAppointDate(dateStr) {
+                let date = new Date(dateStr.replace('-', '/'))
+                this.initSwiperItem(date)
             },
             /**
              * @desc 选择日期change事件

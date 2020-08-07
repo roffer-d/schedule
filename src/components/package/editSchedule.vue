@@ -348,11 +348,12 @@
                     if(!this.form.id){
                         this.form.id = api.uuid()
                         api.addSchedule(this.form)
+                        this.$emit('selectedAppointDate',startTime)
                     }else{
                         api.editSchedule(this.form)
+                        this.$emit('reload')
                     }
 
-                    this.$emit('reload')
                     this.back()
                 }else{
                     this.$emit('onEdit', this.form, this.afterSave)
